@@ -1,0 +1,9 @@
+# Claude
+.claude/
+
+# Apps Script (si no quieres subir el código de Apps Script)
+# apps-script-project/
+
+# Otros
+.DS_Store
+*.log

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador de Aluminio - Mockup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: white;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .card h2 {
+            color: #495057;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .medidas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .materiales-table {
+            width: 100%;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .materiales-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .materiales-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .materiales-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
+        }
+
+        .materiales-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .total-section {
+            background: #28a745;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .total-section .total-amount {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .footer-actions {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .medidas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Cotizador de Aluminio y Cristal</h1>
+            <p>Sistema de cotización de ventanas, puertas y productos de aluminio</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Información del Cliente -->
+            <div class="card">
+                <h2>Información del Cliente</h2>
+
+                <div class="form-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="nombreCliente" placeholder="Ingrese nombre del cliente">
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="telefono" placeholder="(555) 123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="cliente@ejemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Carpeta del Cliente</label>
+                    <input type="text" id="carpeta" placeholder="ID de carpeta de Google Drive" readonly>
+                    <button class="btn-secondary" style="margin-top: 5px;">Ver Carpeta</button>
+                </div>
+            </div>
+
+            <!-- Configuración del Producto -->
+            <div class="card">
+                <h2>Configuración del Producto</h2>
+
+                <div class="form-group">
+                    <label>ID del Producto (B3)</label>
+                    <select id="idProducto">
+                        <option value="">Seleccione un producto...</option>
+                        <option value="V001">V001 - Ventana Corrediza 2 hojas</option>
+                        <option value="V002">V002 - Ventana Corrediza 3 hojas</option>
+                        <option value="P001">P001 - Puerta Abatible</option>
+                        <option value="P002">P002 - Puerta Corrediza</option>
+                        <option value="VP001">VP001 - Ventana Proyectante</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Acabado (B5)</label>
+                    <select id="acabado">
+                        <option value="">Seleccione acabado...</option>
+                        <option value="Natural">Natural</option>
+                        <option value="Blanco">Blanco</option>
+                        <option value="Negro">Negro</option>
+                        <option value="Bronce">Bronce</option>
+                        <option value="Champagne">Champagne</option>
+                        <option value="Madera">Imitación Madera</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Vidrio (B6)</label>
+                    <select id="vidrio">
+                        <option value="">Seleccione vidrio...</option>
+                        <option value="Claro 6mm">Claro 6mm</option>
+                        <option value="Bronce 6mm">Bronce 6mm</option>
+                        <option value="Gris 6mm">Gris 6mm</option>
+                        <option value="Templex Claro">Templex Claro</option>
+                        <option value="DVH Claro">DVH (Doble Vidrio Hermético)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Desperdicio % (B15)</label>
+                    <input type="number" id="desperdicio" value="1" min="1" max="100">
+                </div>
+            </div>
+
+            <!-- Medidas -->
+            <div class="card">
+                <h2>Medidas del Producto</h2>
+
+                <div class="alert alert-info">
+                    Ingrese las medidas en metros (ej: 1.50 para 1.50m)
+                </div>
+
+                <div class="medidas-grid">
+                    <div class="form-group">
+                        <label>Largo 1 (A9)</label>
+                        <input type="number" id="largo1" placeholder="1.50" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Alto 1 (B9)</label>
+                        <input type="number" id="alto1" placeholder="1.20" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Largo 2 (A10)</label>
+                        <input type="number" id="largo2" placeholder="1.50" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Alto 2 (B10)</label>
+                        <input type="number" id="alto2" placeholder="1.20" step="0.01">
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="calcularCotizacion()">
+                    Calcular Cotización
+                </button>
+            </div>
+
+            <!-- Resumen Rápido -->
+            <div class="card">
+                <h2>Resumen Rápido</h2>
+
+                <div id="resumen" style="color: #6c757d; font-style: italic;">
+                    Seleccione un producto y configure las opciones para ver el resumen...
+                </div>
+            </div>
+
+            <!-- Tabla de Materiales -->
+            <div class="card full-width">
+                <h2>Materiales Calculados (D8:H)</h2>
+
+                <div id="alerta-especial" style="display: none;" class="alert">
+                    ¡Atención! Estás por cotizar un modelo especial. Revisa con cuidado el recuadro naranja.
+                </div>
+
+                <div class="materiales-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Material</th>
+                                <th>P.U.</th>
+                                <th>Fórmula</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materialesBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999; padding: 40px;">
+                                    No hay materiales calculados. Presione "Calcular Cotización" para generar la lista.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-section">
+                    <h3>Total de la Cotización</h3>
+                    <div class="total-amount">$<span id="totalMonto">0.00</span></div>
+                    <p style="margin-top: 10px; font-size: 14px;">MXN (Pesos Mexicanos)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="footer-actions">
+            <div>
+                <button class="btn-secondary">Limpiar Formulario</button>
+                <button class="btn-secondary">Nueva Cotización</button>
+            </div>
+            <div>
+                <button class="btn-primary" onclick="enviarAGenerador()">
+                    Enviar a Generador
+                </button>
+                <button class="btn-primary" style="background: #28a745;">
+                    Generar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo simulando las hojas de Google Sheets
+        const datosProductos = {
+            'V001': {
+                nombre: 'Ventana Corrediza 2 hojas',
+                materiales: [
+                    { formula: '=(Largo1+Alto1)*2', unidad: 'Perfil por ml', material: '1234 Marco Superior', precio: 85.50 },
+                    { formula: '=(Largo1+Alto1)*2', unidad: 'Perfil por ml', material: '1235 Marco Inferior', precio: 92.30 },
+                    { formula: '=Largo1*Alto1', unidad: 'm2', material: 'Cristal según selección', precio: 450.00 },
+                    { formula: '=2', unidad: 'Pza', material: 'H001 Chapa para ventana', precio: 125.00 },
+                    { formula: '=4', unidad: 'Pza', material: 'H002 Rodamiento', precio: 35.00 }
+                ]
+            },
+            'V002': {
+                nombre: 'Ventana Corrediza 3 hojas',
+                materiales: [
+                    { formula: '=((Largo1+Alto1)*2)*1.5', unidad: 'Perfil por ml', material: '1234 Marco Superior', precio: 85.50 },
+                    { formula: '=((Largo1+Alto1)*2)*1.5', unidad: 'Perfil por ml', material: '1235 Marco Inferior', precio: 92.30 },
+                    { formula: '=(Largo1*Alto1)*1.5', unidad: 'm2', material: 'Cristal según selección', precio: 450.00 },
+                    { formula: '=3', unidad: 'Pza', material: 'H001 Chapa para ventana', precio: 125.00 },
+                    { formula: '=6', unidad: 'Pza', material: 'H002 Rodamiento', precio: 35.00 }
+                ]
+            },
+            'P001': {
+                nombre: 'Puerta Abatible',
+                materiales: [
+                    { formula: '=(Largo1+Alto1)*2', unidad: 'Perfil por ml', material: '2001 Marco Puerta', precio: 125.00 },
+                    { formula: '=Largo1*Alto1', unidad: 'm2', material: 'Cristal según selección', precio: 550.00 },
+                    { formula: '=1', unidad: 'Pza', material: 'H010 Chapa Principal', precio: 450.00 },
+                    { formula: '=3', unidad: 'Pza', material: 'H011 Bisagra Reforzada', precio: 85.00 }
+                ]
+            }
+        };
+
+        const preciosVidrios = {
+            'Claro 6mm': 450.00,
+            'Bronce 6mm': 480.00,
+            'Gris 6mm': 480.00,
+            'Templex Claro': 650.00,
+            'DVH Claro': 890.00
+        };
+
+        function calcularCotizacion() {
+            const idProducto = document.getElementById('idProducto').value;
+            const acabado = document.getElementById('acabado').value;
+            const vidrio = document.getElementById('vidrio').value;
+            const largo1 = parseFloat(document.getElementById('largo1').value) || 0;
+            const alto1 = parseFloat(document.getElementById('alto1').value) || 0;
+            const largo2 = parseFloat(document.getElementById('largo2').value) || largo1;
+            const alto2 = parseFloat(document.getElementById('alto2').value) || alto1;
+            const desp = parseFloat(document.getElementById('desperdicio').value) || 1;
+
+            // Validaciones
+            if (!idProducto) {
+                alert('Por favor, selecciona un producto');
+                return;
+            }
+            if (!acabado) {
+                alert('Por favor, selecciona un acabado');
+                return;
+            }
+            if (!vidrio) {
+                alert('Por favor, selecciona un tipo de vidrio');
+                return;
+            }
+            if (largo1 === 0 || alto1 === 0) {
+                alert('Por favor, ingresa las medidas');
+                return;
+            }
+
+            // Obtener producto
+            const producto = datosProductos[idProducto];
+            if (!producto) {
+                alert('Producto no encontrado');
+                return;
+            }
+
+            // Calcular materiales
+            const tbody = document.getElementById('materialesBody');
+            tbody.innerHTML = '';
+            let totalGeneral = 0;
+
+            producto.materiales.forEach(material => {
+                // Evaluar fórmula
+                let cantidad = 0;
+                try {
+                    const formula = material.formula
+                        .replace(/Largo1/g, largo1)
+                        .replace(/Alto1/g, alto1)
+                        .replace(/Largo2/g, largo2)
+                        .replace(/Alto2/g, alto2)
+                        .replace(/Desp/g, desp)
+                        .replace(/=/g, '');
+                    cantidad = eval(formula);
+                    cantidad = Math.round(cantidad * 100) / 100;
+                } catch (e) {
+                    cantidad = 0;
+                }
+
+                // Ajustar precio si es vidrio
+                let precio = material.precio;
+                if (material.unidad === 'm2') {
+                    precio = preciosVidrios[vidrio] || material.precio;
+                }
+
+                const total = cantidad * precio;
+                totalGeneral += total;
+
+                // Crear fila
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cantidad.toFixed(2)}</td>
+                    <td>${material.unidad}</td>
+                    <td>${material.unidad === 'm2' ? vidrio : material.material}</td>
+                    <td>$${precio.toFixed(2)}</td>
+                    <td style="font-family: monospace; font-size: 11px;">${material.formula}</td>
+                    <td style="font-weight: 600; color: #28a745;">$${total.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Actualizar total
+            document.getElementById('totalMonto').textContent = totalGeneral.toFixed(2);
+
+            // Actualizar resumen
+            document.getElementById('resumen').innerHTML = `
+                <strong>Producto:</strong> ${producto.nombre}<br>
+                <strong>Acabado:</strong> ${acabado}<br>
+                <strong>Vidrio:</strong> ${vidrio}<br>
+                <strong>Medidas:</strong> ${largo1}m x ${alto1}m<br>
+                <strong>Materiales:</strong> ${producto.materiales.length} items<br>
+                <span class="badge badge-success">Cotización Lista</span>
+            `;
+        }
+
+        function enviarAGenerador() {
+            if (document.getElementById('materialesBody').children.length === 1) {
+                alert('Primero calcula una cotización');
+                return;
+            }
+            alert('✅ Cotización enviada a la hoja "Generador"\n\nEn la app real, esto copiaría los datos a la hoja Generador respetando las filas existentes.');
+        }
+
+        // Event listeners para actualización automática del resumen
+        document.getElementById('idProducto').addEventListener('change', updateResumen);
+        document.getElementById('acabado').addEventListener('change', updateResumen);
+        document.getElementById('vidrio').addEventListener('change', updateResumen);
+
+        function updateResumen() {
+            const idProducto = document.getElementById('idProducto').value;
+            const acabado = document.getElementById('acabado').value;
+            const vidrio = document.getElementById('vidrio').value;
+
+            if (idProducto || acabado || vidrio) {
+                const producto = datosProductos[idProducto];
+                document.getElementById('resumen').innerHTML = `
+                    <strong>Producto:</strong> ${producto ? producto.nombre : 'No seleccionado'}<br>
+                    <strong>Acabado:</strong> ${acabado || 'No seleccionado'}<br>
+                    <strong>Vidrio:</strong> ${vidrio || 'No seleccionado'}<br>
+                    <em style="color: #999;">Configure las medidas y presione "Calcular Cotización"</em>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
