@@ -77,16 +77,23 @@ function ExtraerDatosCotizador() {
   var mapaPreciosOtros = crearMapaDePrecios(datosOtros);
 
   // Buscar columna de acabado en Aluminio (Con trim para evitar espacios extra del QUERY)
+  Logger.log("🔍 Buscando acabado: '" + valorAcabado + "' (longitud: " + valorAcabado.length + ")");
+
   var encabezadosAluminio = datosAluminio[0].map(function(header) {
     return header ? header.toString().trim() : "";
   });
+
+  Logger.log("🔍 Encabezados después de trim: [" + encabezadosAluminio.map(function(h) {
+    return "'" + h + "'(" + h.length + ")";
+  }).join(", ") + "]");
+
   var idxAcabadoAluminio = encabezadosAluminio.indexOf(valorAcabado);
   if (idxAcabadoAluminio === -1) {
     Logger.log("❌ No se encontró la columna de acabado '" + valorAcabado + "' en la hoja 'Aluminio'");
-    Logger.log("🔍 Encabezados disponibles: " + encabezadosAluminio.join(", "));
-    ui.alert('Error', 'El acabado "' + valorAcabado + '" no se encontró en la base de datos de Aluminios.', ui.ButtonSet.OK);
+    ui.alert('Error', 'El acabado "' + valorAcabado + '" no se encontró en la base de datos de Aluminios.\n\nEncabezados disponibles:\n' + encabezadosAluminio.join(", "), ui.ButtonSet.OK);
     return;
   }
+  Logger.log("✅ Acabado encontrado en columna índice: " + idxAcabadoAluminio);
 
   // --- Búsqueda de materiales y precios ---
   Logger.log("🔍 Buscando materiales del producto...");
