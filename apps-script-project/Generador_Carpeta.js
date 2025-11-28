@@ -7,6 +7,9 @@ function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('Acciones')
       .addItem('📁 Enviar a Carpeta Cliente', 'transferirGeneradorACliente')
+      .addSeparator()
+      .addItem('🔐 Autorizar Permisos Drive', 'autorizarPermisosDrive')
+      .addItem('🧪 Probar Acceso a Carpeta', 'probarAccesoCarpeta')
       .addToUi();
 }
 
@@ -15,14 +18,16 @@ function transferirGeneradorACliente() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var hojaGenerador = ss.getSheetByName("Generador");
-    
+    var ui = SpreadsheetApp.getUi();
+
     Logger.log("🚀 INICIANDO transferirGeneradorACliente...");
-    
+
     // ✅ PASO 1: Obtener información del cliente y carpeta
     Logger.log("📋 PASO 1: Obteniendo información del cliente...");
     var infoCliente = obtenerInformacionCliente(hojaGenerador);
     if (!infoCliente.exito) {
       Logger.log("❌ FALLÓ PASO 1: " + infoCliente.mensaje);
+      ui.alert('Error en Paso 1', infoCliente.mensaje, ui.ButtonSet.OK);
       return infoCliente.mensaje;
     }
     Logger.log("✅ PASO 1 COMPLETADO");
@@ -32,46 +37,53 @@ function transferirGeneradorACliente() {
     var ultimaFila = hojaGenerador.getRange("K1").getValue();
     if (!ultimaFila || ultimaFila < 4) {
       Logger.log("❌ FALLÓ PASO 2: No hay datos para transferir (K1 = " + ultimaFila + ")");
+      ui.alert('Error en Paso 2', "No hay datos para transferir (K1 = " + ultimaFila + ")", ui.ButtonSet.OK);
       return "Error: No hay datos para transferir (K1 = " + ultimaFila + ")";
     }
-    
+
     var rangoDatos = "A1:M" + ultimaFila; // Desde encabezados hasta última fila
     Logger.log("Rango a copiar: " + rangoDatos);
     Logger.log("✅ PASO 2 COMPLETADO");
-    
+
     // ✅ PASO 3: Crear nuevo archivo en carpeta del cliente
     Logger.log("📋 PASO 3: Creando archivo en carpeta del cliente...");
     var nuevoArchivo = crearArchivoEnCarpetaCliente(infoCliente.carpetaId, infoCliente.nombreCliente);
     if (!nuevoArchivo.exito) {
       Logger.log("❌ FALLÓ PASO 3: " + nuevoArchivo.mensaje);
+      ui.alert('Error en Paso 3 - Creación de archivo', nuevoArchivo.mensaje, ui.ButtonSet.OK);
       return nuevoArchivo.mensaje;
     }
     Logger.log("✅ PASO 3 COMPLETADO - Archivo creado: " + nuevoArchivo.url);
-    
+
     // ✅ PASO 4: Copiar datos al nuevo archivo
     Logger.log("📋 PASO 4: Copiando datos al nuevo archivo...");
     var resultadoCopia = copiarDatosAlNuevoArchivo(hojaGenerador, nuevoArchivo.archivo, rangoDatos);
     if (!resultadoCopia.exito) {
       Logger.log("❌ FALLÓ PASO 4: " + resultadoCopia.mensaje);
+      ui.alert('Error en Paso 4 - Copia de datos', resultadoCopia.mensaje, ui.ButtonSet.OK);
       return resultadoCopia.mensaje;
     }
     Logger.log("✅ PASO 4 COMPLETADO");
-    
+
     // ✅ PASO 5: Limpiar hoja Generador (eliminar filas y desplazar hacia arriba)
     Logger.log("📋 PASO 5: Limpiando hoja Generador...");
     var resultadoLimpieza = limpiarGeneradorConDesplazamiento(hojaGenerador, ultimaFila);
     if (!resultadoLimpieza.exito) {
       Logger.log("❌ FALLÓ PASO 5: " + resultadoLimpieza.mensaje);
+      ui.alert('Error en Paso 5 - Limpieza', resultadoLimpieza.mensaje, ui.ButtonSet.OK);
       return resultadoLimpieza.mensaje;
     }
     Logger.log("✅ PASO 5 COMPLETADO");
-    
+
     Logger.log("🎉 TODO COMPLETADO EXITOSAMENTE");
+    ui.alert('¡Éxito!', 'Archivo creado en carpeta del cliente y Generador limpiado.\n\nURL: ' + nuevoArchivo.url, ui.ButtonSet.OK);
     return "✅ Éxito: Archivo creado en carpeta del cliente y Generador limpiado. URL: " + nuevoArchivo.url;
     
   } catch (e) {
     Logger.log("💥 ERROR GENERAL en transferirGeneradorACliente: " + e.toString());
     Logger.log("📍 Stack trace: " + e.stack);
+    var ui = SpreadsheetApp.getUi();
+    ui.alert('Error General', 'Ocurrió un error inesperado:\n\n' + e.message + '\n\nRevisa los logs para más detalles (Extensiones > Apps Script > Ver logs)', ui.ButtonSet.OK);
     return "Error: " + e.message;
   }
 }
@@ -316,22 +328,34 @@ function limpiarGeneradorConDesplazamiento(hoja, ultimaFila) {
       Logger.log("No hay filas para eliminar (última fila: " + ultimaFila + ")");
       return { exito: true };
     }
-    
+
     // Calcular cuántas filas eliminar (desde fila 4 hasta ultimaFila)
     var filasAEliminar = ultimaFila - 3; // Restar 3 porque empezamos desde fila 4
-    
+
     Logger.log("Eliminando " + filasAEliminar + " filas desde la fila 4");
-    
+
     // Eliminar las filas (esto automáticamente desplaza hacia arriba)
     hoja.deleteRows(4, filasAEliminar);
-    
+
     // ✅ IMPORTANTE: Restaurar la fórmula en K1 después de eliminar filas
     hoja.getRange("K1").setFormula('=MAX(FILTER(ROW(D:D), D:D<>""))');
-    
+
     Logger.log("Filas eliminadas exitosamente y fórmula K1 restaurada");
-    
+
+    // ✅ Limpiar rango A4:I completo con formato de bordes blancos
+    Logger.log("Limpiando rango A4:I con bordes blancos...");
+    var rangoLimpieza = hoja.getRange("A4:I");
+
+    // Limpiar contenido
+    rangoLimpieza.clearContent();
+
+    // Aplicar bordes blancos a todo el rango
+    rangoLimpieza.setBorder(true, true, true, true, true, true, "#FFFFFF", SpreadsheetApp.BorderStyle.SOLID);
+
+    Logger.log("✅ Rango A4:I limpiado con bordes blancos");
+
     return { exito: true };
-    
+
   } catch (e) {
     return { exito: false, mensaje: "Error limpiando Generador: " + e.message };
   }
