@@ -338,7 +338,8 @@ function limpiarGeneradorConDesplazamiento(hoja, ultimaFila) {
     hoja.deleteRows(4, filasAEliminar);
 
     // ✅ IMPORTANTE: Restaurar la fórmula en K1 después de eliminar filas
-    hoja.getRange("K1").setFormula('=MAX(FILTER(ROW(D:D), D:D<>""))');
+    // Nueva fórmula: calcula el máximo entre última fila de columna A y columna D
+    hoja.getRange("K1").setFormula('=MAX(FILTER(ROW(A:A), A:A<>""), FILTER(ROW(D:D), D:D<>""))');
 
     Logger.log("Filas eliminadas exitosamente y fórmula K1 restaurada");
 

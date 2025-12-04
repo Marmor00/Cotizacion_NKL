@@ -15,12 +15,14 @@ function transferirDatosCotizador() {
     Logger.log("Iniciando transferencia optimizada...");
 
     // PASO 1: Leer la última fila del destino para saber dónde pegar
-    var ultimaFilaColumnaD = hojaDestino.getRange("A1").getValue();
+    // K1 contiene la fórmula que calcula el máximo entre columna A y columna D
+    var ultimaFilaDestino = hojaDestino.getRange("K1").getValue();
     var filaPegado = 4; // Por defecto fila 4
 
-    if (ultimaFilaColumnaD && ultimaFilaColumnaD > 0) {
-      filaPegado = ultimaFilaColumnaD + 2; // Saltar 2 filas libres
+    if (ultimaFilaDestino && ultimaFilaDestino > 0) {
+      filaPegado = ultimaFilaDestino + 2; // Saltar 2 filas libres
     }
+    Logger.log("Última fila calculada: " + ultimaFilaDestino);
     Logger.log("Pegando en fila: " + filaPegado);
 
     // PASO 2: Copiar A1:B17, aplicar bordes y formato de texto (SIN CAMBIOS)
@@ -110,13 +112,14 @@ function transferirDatosCotizador() {
   }
 }
 
-// --- Esta función no necesita cambios ---
+// --- Función actualizada para usar la nueva fórmula en K1 ---
 function limpiarHojaGenerador() {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var hojaDestino = ss.getSheetByName("Generador");
     hojaDestino.clear();
-    hojaDestino.getRange("J1").setFormula('=MAX(FILTER(ROW(D:D), D:D<>""))');
+    // Nueva fórmula: calcula el máximo entre última fila de columna A y columna D
+    hojaDestino.getRange("K1").setFormula('=MAX(FILTER(ROW(A:A), A:A<>""), FILTER(ROW(D:D), D:D<>""))');
     return "Hoja limpiada";
   } catch (e) {
     return "Error: " + e.message;
