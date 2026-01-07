@@ -152,7 +152,7 @@ function obtenerUltimoFolio() {
  * @param {Object} totales - Totales calculados
  * @param {String} urlPDF - URL del PDF generado
  */
-function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, totales, urlPDFInterno, urlPDFCliente) {
+function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, totales, urlPDFInterno, urlPDFCliente, productosCliente) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var hojaCotizaciones = ss.getSheetByName("Cotizaciones");
@@ -174,7 +174,8 @@ function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, to
         "Total",
         "Link PDF Interno",
         "Link PDF Cliente",
-        "Productos (JSON)",
+        "Productos Interno (JSON)",
+        "Productos Cliente (JSON)",
         "Datos Cliente (JSON)",
         "Datos Cotización (JSON)",
         "Descripción Resumida",
@@ -195,11 +196,12 @@ function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, to
       hojaCotizaciones.setColumnWidth(8, 100);  // Total
       hojaCotizaciones.setColumnWidth(9, 400);  // Link PDF Interno
       hojaCotizaciones.setColumnWidth(10, 400); // Link PDF Cliente
-      hojaCotizaciones.setColumnWidth(11, 300); // Productos JSON
-      hojaCotizaciones.setColumnWidth(12, 250); // Datos Cliente JSON
-      hojaCotizaciones.setColumnWidth(13, 250); // Datos Cotización JSON
-      hojaCotizaciones.setColumnWidth(14, 400); // Descripción Resumida
-      hojaCotizaciones.setColumnWidth(15, 120); // Modo Precio Cerrado
+      hojaCotizaciones.setColumnWidth(11, 300); // Productos Interno JSON
+      hojaCotizaciones.setColumnWidth(12, 300); // Productos Cliente JSON
+      hojaCotizaciones.setColumnWidth(13, 250); // Datos Cliente JSON
+      hojaCotizaciones.setColumnWidth(14, 250); // Datos Cotización JSON
+      hojaCotizaciones.setColumnWidth(15, 400); // Descripción Resumida
+      hojaCotizaciones.setColumnWidth(16, 120); // Modo Precio Cerrado
 
       Logger.log("✅ Hoja Cotizaciones creada");
     }
@@ -208,8 +210,8 @@ function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, to
     var ultimaFila = hojaCotizaciones.getLastRow() + 1;
     var fecha = new Date();
 
-    // Convertir productos a JSON (solo campos relevantes)
-    var productosSimplificados = productos.map(function(p) {
+    // Convertir productos INTERNOS a JSON (con descuentos si es Modo B)
+    var productosInternoSimplificados = productos.map(function(p) {
       return {
         codigo: p.codigoEditado || p.codigo,
         descripcion: p.descripcion,
@@ -220,6 +222,23 @@ function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, to
         importe: p.importeFinal || p.importe
       };
     });
+
+    // Convertir productos CLIENTE a JSON (sin descuentos, solo si es Modo B)
+    var productosClienteJSON = "";
+    if (productosCliente && productosCliente.length > 0) {
+      var productosClienteSimplificados = productosCliente.map(function(p) {
+        return {
+          codigo: p.codigoEditado || p.codigo,
+          descripcion: p.descripcion,
+          cantidad: p.piezas || p.cantidad,
+          precioUnitario: p.precioUnitario || p.precioVenta,
+          descuentoPorcentaje: p.descuentoPorcentaje || 0,
+          descuentoPesos: p.descuentoPesos || p.descuentoMonto || 0,
+          importe: p.importeFinal || p.importe
+        };
+      });
+      productosClienteJSON = JSON.stringify(productosClienteSimplificados);
+    }
 
     // Generar descripción resumida (similar a NotasVenta pero sin "Atendido por")
     var descripcionResumida = "Cotización correspondiente";
@@ -245,7 +264,8 @@ function registrarCotizacion(folio, datosCliente, datosCotizacion, productos, to
       totales.total,
       urlPDFInterno,
       urlPDFCliente || "",  // Puede ser null si no es Modo B
-      JSON.stringify(productosSimplificados),
+      JSON.stringify(productosInternoSimplificados),  // Productos con descuentos (columna 11)
+      productosClienteJSON,  // Productos sin descuentos (columna 12, solo Modo B)
       JSON.stringify(datosCliente),
       JSON.stringify(datosCotizacion),
       descripcionResumida,

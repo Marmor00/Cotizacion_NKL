@@ -485,15 +485,18 @@ function generarPDFCotizacion(datosCliente, datosCotizacion, productosSelecciona
 
     // PASO 6: Registrar cotización en la hoja Cotizaciones
     Logger.log("📋 PASO 6: Registrando cotización...");
-    var productosParaGuardar = modoPrecioCerrado ? productosConDescuento : productosParaPDF;
+    var productosInterno = modoPrecioCerrado ? productosConDescuento : productosParaPDF;
+    var productosCliente = modoPrecioCerrado ? productosParaPDF : null; // Productos SIN descuentos
+
     registrarCotizacion(
       folio,
       datosCliente,
       datosCotizacion,
-      productosParaGuardar,
+      productosInterno,  // Productos con descuentos (o normales si no es Modo B)
       totales,
       urlPDFInterno,
-      urlPDFCliente  // Pasar también URL del PDF cliente si existe
+      urlPDFCliente,     // URL del PDF cliente (si existe)
+      productosCliente   // Productos sin descuentos (solo en Modo B)
     );
     Logger.log("✅ Cotización registrada");
 

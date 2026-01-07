@@ -25,15 +25,22 @@ function obtenerCotizacionesDisponibles() {
     }
 
     // Leer todas las cotizaciones (desde la fila 2)
-    // Ahora tenemos 15 columnas con Link PDF Cliente
-    var datos = hojaCotizaciones.getRange(2, 1, ultimaFila - 1, 15).getValues();
+    // Ahora tenemos 16 columnas con Productos Cliente (JSON)
+    var datos = hojaCotizaciones.getRange(2, 1, ultimaFila - 1, 16).getValues();
     var cotizaciones = [];
 
     for (var i = 0; i < datos.length; i++) {
       try {
-        var productos = JSON.parse(datos[i][10] || "[]");  // Productos JSON ahora en columna 11
-        var datosCliente = JSON.parse(datos[i][11] || "{}");  // Cliente JSON en columna 12
-        var datosCotizacion = JSON.parse(datos[i][12] || "{}");  // Cotización JSON en columna 13
+        var modoPrecioCerrado = String(datos[i][15] || "") === "SÍ";  // Modo B (columna 16)
+
+        // Si es Modo B, usar productos CLIENTE (sin descuentos) para mostrar descuento visual
+        // Si NO es Modo B, usar productos INTERNO (normales)
+        var productosInterno = JSON.parse(datos[i][10] || "[]");  // Productos Interno JSON (columna 11)
+        var productosCliente = JSON.parse(datos[i][11] || "[]");  // Productos Cliente JSON (columna 12)
+        var productos = modoPrecioCerrado && productosCliente.length > 0 ? productosCliente : productosInterno;
+
+        var datosCliente = JSON.parse(datos[i][12] || "{}");  // Datos Cliente JSON (columna 13)
+        var datosCotizacion = JSON.parse(datos[i][13] || "{}");  // Datos Cotización JSON (columna 14)
 
         // Convertir fecha a string para evitar problemas de serialización
         var fechaStr = "";
@@ -56,10 +63,10 @@ function obtenerCotizacionesDisponibles() {
           total: Number(datos[i][7]) || 0,
           linkPDFInterno: String(datos[i][8] || ""),  // Link PDF Interno (columna 9)
           linkPDFCliente: String(datos[i][9] || ""),  // Link PDF Cliente (columna 10)
-          productos: productos,
+          productos: productos,  // Productos CLIENTE si es Modo B, sino INTERNO
           datosCliente: datosCliente,
           datosCotizacion: datosCotizacion,
-          modoPrecioCerrado: String(datos[i][14] || "") === "SÍ"  // Modo B (columna 15)
+          modoPrecioCerrado: modoPrecioCerrado
         });
 
       } catch (e) {
@@ -90,13 +97,55 @@ function generarPDFNotaVenta(datosNotaVenta) {
     var folioNV = generarFolioNotaVenta();
     Logger.log("✅ Folio NV generado: " + folioNV);
 
+    // PASO 1.5: Si es Modo B, aplicar descuento 13.79% a los productos
+    var productos = datosNotaVenta.productos;
+    var modoPrecioCerrado = datosNotaVenta.modoPrecioCerrado || false;
+
+    if (modoPrecioCerrado) {
+      Logger.log("💰 MODO B DETECTADO - Aplicando descuento 13.79% a productos...");
+      var DESCUENTO_IVA = 13.79;
+
+      // Aplicar descuento a cada producto
+      productos = productos.map(function(p) {
+        var importe = p.importe || 0;
+        var descuento = importe * (DESCUENTO_IVA / 100);
+        var importeConDescuento = importe - descuento;
+
+        return {
+          codigo: p.codigo,
+          descripcion: p.descripcion,
+          cantidad: p.cantidad,
+          precioUnitario: p.precioUnitario,
+          descuentoPorcentaje: DESCUENTO_IVA,
+          descuentoPesos: descuento,
+          importe: importeConDescuento
+        };
+      });
+
+      // Recalcular totales con descuentos aplicados
+      var subtotal = 0;
+      for (var i = 0; i < productos.length; i++) {
+        subtotal += productos[i].importe;
+      }
+      var iva = subtotal * 0.16;
+      var total = subtotal + iva;
+
+      datosNotaVenta.totales = {
+        subtotal: subtotal,
+        iva: iva,
+        total: total
+      };
+
+      Logger.log("✅ Descuentos aplicados - Nuevo total: $" + total.toFixed(2));
+    }
+
     // PASO 2: Generar el documento PDF
     Logger.log("📋 PASO 2: Generando documento PDF...");
     var urlPDF = generarDocumentoNotaVenta(
       folioNV,
       datosNotaVenta.datosCliente,
       datosNotaVenta.datosCotizacion,
-      datosNotaVenta.productos,
+      productos,
       datosNotaVenta.totales,
       datosNotaVenta.modoProductos,
       {
@@ -124,7 +173,7 @@ function generarPDFNotaVenta(datosNotaVenta) {
       datosNotaVenta.folioCotizacion,
       datosNotaVenta.datosCliente,
       datosNotaVenta.datosCotizacion,
-      datosNotaVenta.productos,
+      productos,  // Usar productos con descuentos si es Modo B
       datosNotaVenta.totales,
       datosNotaVenta.modoProductos,
       datosNotaVenta.metodoPago,
