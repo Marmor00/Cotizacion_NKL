@@ -3,15 +3,19 @@
  * y luego limpia la hoja Generador eliminando las filas usadas
  */
 
-function onOpen() {
-  SpreadsheetApp.getUi()
-      .createMenu('Acciones')
-      .addItem('📁 Enviar a Carpeta Cliente', 'transferirGeneradorACliente')
-      .addSeparator()
-      .addItem('🔐 Autorizar Permisos Drive', 'autorizarPermisosDrive')
-      .addItem('🧪 Probar Acceso a Carpeta', 'probarAccesoCarpeta')
-      .addToUi();
-}
+/**
+ * NOTA: La función onOpen() está ahora en Menu_Principal.js
+ * para evitar duplicados. Este archivo ya no necesita onOpen().
+ */
+// function onOpen() {
+//   SpreadsheetApp.getUi()
+//       .createMenu('Acciones')
+//       .addItem('📁 Enviar a Carpeta Cliente', 'transferirGeneradorACliente')
+//       .addSeparator()
+//       .addItem('🔐 Autorizar Permisos Drive', 'autorizarPermisosDrive')
+//       .addItem('🧪 Probar Acceso a Carpeta', 'probarAccesoCarpeta')
+//       .addToUi();
+// }
 
 
 function transferirGeneradorACliente() {

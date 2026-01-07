@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <title>Generar Nota de Venta</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1b5e20 0%, #4caf50 100%);
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.95;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1b5e20;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #4caf50;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #333;
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #4caf50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .radio-option input[type="radio"] {
+        width: auto;
+        cursor: pointer;
+      }
+
+      .productos-container {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        background: #f9f9f9;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .producto-item {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+
+      .producto-item h4 {
+        color: #1b5e20;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .producto-details {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(27, 94, 32, 0.3);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .loading.active {
+        display: block;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4caf50;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: none;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .alert.active {
+        display: block;
+      }
+
+      .alert.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .info-box {
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+      }
+
+      .info-box strong {
+        color: #1b5e20;
+        display: block;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📄 Generar Nota de Venta</h1>
+        <p>Selecciona una cotización y completa los datos adicionales</p>
+      </div>
+
+      <div class="content">
+        <div id="alertBox" class="alert"></div>
+
+        <form id="formNotaVenta" onsubmit="generarNotaVenta(event)">
+
+          <!-- SELECCIÓN DE COTIZACIÓN -->
+          <div class="section">
+            <div class="section-title">1. Seleccionar Cotización</div>
+
+            <div class="form-group">
+              <label for="selectCotizacion">Cotización Base:</label>
+              <select id="selectCotizacion" required onchange="cargarDatosCotizacion()">
+                <option value="">Selecciona una cotización...</option>
+              </select>
+            </div>
+
+            <div id="infoCotizacion" class="info-box" style="display:none;">
+              <strong>Información de la Cotización:</strong>
+              <div id="detallesCotizacion"></div>
+            </div>
+          </div>
+
+          <!-- PRODUCTOS Y MODO DE VISUALIZACIÓN -->
+          <div class="section">
+            <div class="section-title">2. Productos y Modo de Visualización</div>
+
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="modoProductos" value="resumido" checked onchange="cambiarModoVisualizacion()">
+                <span>Resumido (Total y cantidad de productos)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="modoProductos" value="desglosado" onchange="cambiarModoVisualizacion()">
+                <span>Desglosado (Detalle producto por producto)</span>
+              </label>
+            </div>
+
+            <div id="vistaProductos" style="display:none; margin-top:15px;">
+              <div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 6px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                  <thead style="position: sticky; top: 0; background: #1b5e20; color: white; z-index: 10;">
+                    <tr>
+                      <th style="padding: 10px 8px; text-align: center; border: 1px solid #ddd;">✓</th>
+                      <th style="padding: 10px 8px; text-align: center; border: 1px solid #ddd;">No.</th>
+                      <th style="padding: 10px 8px; text-align: left; border: 1px solid #ddd; min-width: 100px;">Código</th>
+                      <th style="padding: 10px 8px; text-align: left; border: 1px solid #ddd; min-width: 200px;">Descripción</th>
+                      <th style="padding: 10px 8px; text-align: center; border: 1px solid #ddd;">Cant.</th>
+                      <th style="padding: 10px 8px; text-align: right; border: 1px solid #ddd;">P.U.</th>
+                      <th style="padding: 10px 8px; text-align: center; border: 1px solid #ddd;">% Desc.</th>
+                      <th style="padding: 10px 8px; text-align: right; border: 1px solid #ddd;">$ Desc.</th>
+                      <th style="padding: 10px 8px; text-align: right; border: 1px solid #ddd;">Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productosTableBody">
+                    <!-- Se llenará dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+              <div style="margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 6px;">
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                  <span>Subtotal:</span>
+                  <span id="totalSubtotal">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                  <span>IVA (16%):</span>
+                  <span id="totalIVA">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 2px solid #1b5e20; font-size: 16px; font-weight: bold; color: #1b5e20;">
+                  <span>TOTAL:</span>
+                  <span id="totalGeneral">$0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DATOS ADICIONALES DE NOTA DE VENTA -->
+          <div class="section">
+            <div class="section-title">3. Datos de la Nota de Venta</div>
+
+            <div class="form-group">
+              <label for="metodoPago">Método de Pago:</label>
+              <select id="metodoPago" required>
+                <option value="">Seleccionar...</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Tarjeta">Tarjeta de Crédito/Débito</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Mixto">Mixto</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="condicionesPago">Condiciones de Pago:</label>
+              <select id="condicionesPago" required>
+                <option value="">Seleccionar...</option>
+                <option value="Contado">Contado</option>
+                <option value="50% Anticipo + 50% Contra Entrega">50% Anticipo + 50% Contra Entrega</option>
+                <option value="30 días">30 días</option>
+                <option value="60 días">60 días</option>
+                <option value="90 días">90 días</option>
+                <option value="Otro">Otro (especificar en observaciones)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="fechaEntrega">Fecha de Entrega Estimada:</label>
+              <input type="text" id="fechaEntrega" placeholder="Ej: 15 de enero de 2025">
+            </div>
+
+            <div class="form-group">
+              <label for="lugarEntrega">Lugar de Entrega:</label>
+              <input type="text" id="lugarEntrega" placeholder="Ej: Guadalajara, Jalisco">
+            </div>
+
+            <div class="form-group">
+              <label for="observaciones">Observaciones Adicionales:</label>
+              <textarea id="observaciones" placeholder="Notas o comentarios adicionales..."></textarea>
+            </div>
+          </div>
+
+          <!-- BOTÓN -->
+          <div class="buttons">
+            <button type="submit" class="btn btn-primary" id="btnGenerar">
+              ✨ Generar Nota de Venta
+            </button>
+          </div>
+        </form>
+
+        <div id="loadingGenerar" class="loading">
+          <div class="spinner"></div>
+          <p>Generando Nota de Venta...</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var cotizacionesDisponibles = [];
+      var cotizacionSeleccionada = null;
+
+      // Cargar cotizaciones al iniciar
+      window.addEventListener('load', function() {
+        cargarCotizaciones();
+      });
+
+      function cargarCotizaciones() {
+        google.script.run
+          .withSuccessHandler(function(cotizaciones) {
+            cotizacionesDisponibles = cotizaciones;
+            var select = document.getElementById('selectCotizacion');
+
+            if (!cotizaciones || cotizaciones.length === 0) {
+              mostrarAlerta('No hay cotizaciones disponibles. Genera una cotización primero.', 'error');
+              return;
+            }
+
+            cotizaciones.forEach(function(cot) {
+              var option = document.createElement('option');
+              option.value = cot.folio;
+              option.textContent = 'Folio ' + cot.folio + ' - ' + cot.cliente + ' (' + cot.proyecto + ')';
+              select.appendChild(option);
+            });
+          })
+          .withFailureHandler(function(error) {
+            mostrarAlerta('Error al cargar cotizaciones: ' + error.message, 'error');
+          })
+          .obtenerCotizacionesDisponibles();
+      }
+
+      function cargarDatosCotizacion() {
+        var folio = document.getElementById('selectCotizacion').value;
+
+        if (!folio) {
+          document.getElementById('infoCotizacion').style.display = 'none';
+          document.getElementById('vistaProductos').style.display = 'none';
+          cotizacionSeleccionada = null;
+          return;
+        }
+
+        cotizacionSeleccionada = cotizacionesDisponibles.find(function(c) {
+          return c.folio == folio;
+        });
+
+        if (cotizacionSeleccionada) {
+          // Mostrar información de la cotización
+          var detalles = document.getElementById('detallesCotizacion');
+          detalles.innerHTML =
+            '<strong>Cliente:</strong> ' + cotizacionSeleccionada.cliente + '<br>' +
+            '<strong>Proyecto:</strong> ' + cotizacionSeleccionada.proyecto + '<br>' +
+            '<strong>Total:</strong> $' + cotizacionSeleccionada.total.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '<br>' +
+            '<strong>Productos:</strong> ' + cotizacionSeleccionada.productos.length + ' items';
+
+          document.getElementById('infoCotizacion').style.display = 'block';
+
+          // Mostrar productos
+          mostrarProductos();
+        }
+      }
+
+      function cambiarModoVisualizacion() {
+        mostrarProductos();
+      }
+
+      function mostrarProductos() {
+        if (!cotizacionSeleccionada) return;
+
+        var modoProductos = document.querySelector('input[name="modoProductos"]:checked').value;
+        document.getElementById('vistaProductos').style.display = 'block';
+        var tbody = document.getElementById('productosTableBody');
+        tbody.innerHTML = '';
+
+        if (modoProductos === 'resumido') {
+          // MODO RESUMIDO: Una sola partida con descripción editable
+          var tr = document.createElement('tr');
+          tr.style.backgroundColor = '#ffffff';
+
+          // Calcular total de todos los productos
+          var totalCantidad = cotizacionSeleccionada.productos.length;
+          var subtotalTotal = 0;
+
+          cotizacionSeleccionada.productos.forEach(function(prod) {
+            subtotalTotal += prod.importe || (prod.precioUnitario * prod.cantidad);
+          });
+
+          // Construir descripción formal (igual que en el PDF)
+          var idProyecto = cotizacionSeleccionada.datosCotizacion.idObra || cotizacionSeleccionada.datosCotizacion.proyecto || "el proyecto";
+          var domicilio = cotizacionSeleccionada.datosCliente.domicilioEntrega || "";
+          var vendedor = cotizacionSeleccionada.datosCotizacion.vendedor || "";
+          var folioCotizacion = cotizacionSeleccionada.folio || "";
+
+          var descripcionFormal = "Pago correspondiente a";
+          if (folioCotizacion) {
+            descripcionFormal += " la cotización folio " + folioCotizacion;
+          }
+          if (idProyecto) {
+            descripcionFormal += " del proyecto \"" + idProyecto + "\"";
+          }
+          if (domicilio) {
+            descripcionFormal += ", instalado en " + domicilio;
+          }
+          if (vendedor) {
+            descripcionFormal += ". Atendido por: " + vendedor;
+          }
+          descripcionFormal += ".";
+
+          tr.innerHTML =
+            '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' +
+              '<input type="checkbox" class="producto-checkbox-resumido" checked disabled>' +
+            '</td>' +
+            '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">1</td>' +
+            '<td style="padding: 8px; border: 1px solid #ddd;">' +
+              '<input type="text" id="codigo-resumido" value="VARIOS" style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 4px;">' +
+            '</td>' +
+            '<td style="padding: 8px; border: 1px solid #ddd;">' +
+              '<textarea id="descripcion-resumida" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-height: 80px; font-family: inherit; font-size: 13px; resize: vertical;">' + descripcionFormal + '</textarea>' +
+            '</td>' +
+            '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' + totalCantidad + '</td>' +
+            '<td style="padding: 8px; text-align: right; border: 1px solid #ddd;" id="pu-resumido">$' + subtotalTotal.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '</td>' +
+            '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' +
+              '<input type="number" id="descuento-resumido" value="0" min="0" max="100" step="0.1" onchange="calcularDescuentoResumido()" style="width: 60px; padding: 4px; border: 1px solid #ddd; border-radius: 4px;">' +
+            '</td>' +
+            '<td style="padding: 8px; text-align: right; border: 1px solid #ddd;" id="desc-pesos-resumido">$0.00</td>' +
+            '<td style="padding: 8px; text-align: right; border: 1px solid #ddd; font-weight: bold;" id="importe-resumido">$' + subtotalTotal.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '</td>';
+
+          tbody.appendChild(tr);
+
+          // Guardar el subtotal para el cálculo de descuento
+          window.subtotalResumido = subtotalTotal;
+
+        } else {
+          // MODO DESGLOSADO: Tabla completa con todos los productos
+          cotizacionSeleccionada.productos.forEach(function(prod, index) {
+            var tr = document.createElement('tr');
+            tr.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f9f9f9';
+
+            var cantidad = prod.cantidad || 1;
+            var precioUnitario = prod.precioUnitario || 0;
+            var descuentoPorcentaje = prod.descuentoPorcentaje || 0;
+            var descuentoPesos = prod.descuentoPesos || 0;
+            var importe = prod.importe || (precioUnitario * cantidad);
+
+            tr.innerHTML =
+              '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' +
+                '<input type="checkbox" class="producto-checkbox" checked data-index="' + index + '">' +
+              '</td>' +
+              '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' + (index + 1) + '</td>' +
+              '<td style="padding: 8px; border: 1px solid #ddd;">' +
+                '<input type="text" class="producto-codigo" value="' + (prod.codigo || '') + '" data-index="' + index + '" style="width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 4px;">' +
+              '</td>' +
+              '<td style="padding: 8px; border: 1px solid #ddd;">' + (prod.descripcion || '').substring(0, 60) + (prod.descripcion && prod.descripcion.length > 60 ? '...' : '') + '</td>' +
+              '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' + cantidad + '</td>' +
+              '<td style="padding: 8px; text-align: right; border: 1px solid #ddd;">$' + precioUnitario.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '</td>' +
+              '<td style="padding: 8px; text-align: center; border: 1px solid #ddd;">' +
+                '<input type="number" class="producto-descuento" value="' + descuentoPorcentaje + '" min="0" max="100" step="0.1" data-index="' + index + '" onchange="calcularDescuento(' + index + ')" style="width: 60px; padding: 4px; border: 1px solid #ddd; border-radius: 4px;">' +
+              '</td>' +
+              '<td style="padding: 8px; text-align: right; border: 1px solid #ddd;" id="desc-pesos-' + index + '">$' + descuentoPesos.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '</td>' +
+              '<td style="padding: 8px; text-align: right; border: 1px solid #ddd; font-weight: bold;" id="importe-' + index + '">$' + importe.toLocaleString('es-MX', {minimumFractionDigits: 2}) + '</td>';
+
+            tbody.appendChild(tr);
+          });
+
+          // Event listener para recalcular cuando se marcan/desmarcan checkboxes
+          document.querySelectorAll('.producto-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', calcularTotales);
+          });
+        }
+
+        calcularTotales();
+      }
+
+      function calcularDescuento(index) {
+        var prod = cotizacionSeleccionada.productos[index];
+        var descuentoPorcentaje = parseFloat(document.querySelector('.producto-descuento[data-index="' + index + '"]').value) || 0;
+
+        var cantidad = prod.cantidad || 1;
+        var precioUnitario = prod.precioUnitario || 0;
+        var subtotalProducto = precioUnitario * cantidad;
+        var descuentoPesos = (subtotalProducto * descuentoPorcentaje) / 100;
+        var importe = subtotalProducto - descuentoPesos;
+
+        // Actualizar en el objeto
+        prod.descuentoPorcentaje = descuentoPorcentaje;
+        prod.descuentoPesos = descuentoPesos;
+        prod.importe = importe;
+
+        // Actualizar en la interfaz
+        document.getElementById('desc-pesos-' + index).textContent = '$' + descuentoPesos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+        document.getElementById('importe-' + index).textContent = '$' + importe.toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+        calcularTotales();
+      }
+
+      function calcularDescuentoResumido() {
+        var descuentoPorcentaje = parseFloat(document.getElementById('descuento-resumido').value) || 0;
+        var subtotal = window.subtotalResumido || 0;
+        var descuentoPesos = (subtotal * descuentoPorcentaje) / 100;
+        var importe = subtotal - descuentoPesos;
+
+        // Actualizar en la interfaz
+        document.getElementById('desc-pesos-resumido').textContent = '$' + descuentoPesos.toLocaleString('es-MX', {minimumFractionDigits: 2});
+        document.getElementById('importe-resumido').textContent = '$' + importe.toLocaleString('es-MX', {minimumFractionDigits: 2});
+
+        // Guardar para usar al generar
+        window.descuentoPorcentajeResumido = descuentoPorcentaje;
+        window.descuentoPesosResumido = descuentoPesos;
+        window.importeResumido = importe;
+
+        calcularTotales();
+      }
+
+      function calcularTotales() {
+        var modoProductos = document.querySelector('input[name="modoProductos"]:checked').value;
+        var subtotal = 0;
+
+        if (modoProductos === 'resumido') {
+          // En modo resumido, usar el importe con descuento
+          subtotal = window.importeResumido || window.subtotalResumido || 0;
+        } else {
+          // En modo desglosado, sumar productos seleccionados
+          var checkboxes = document.querySelectorAll('.producto-checkbox:checked');
+          checkboxes.forEach(function(checkbox) {
+            var index = parseInt(checkbox.dataset.index);
+            var prod = cotizacionSeleccionada.productos[index];
+            subtotal += prod.importe || 0;
+          });
+        }
+
+        var iva = subtotal * 0.16;
+        var total = subtotal + iva;
+
+        document.getElementById('totalSubtotal').textContent = '$' + subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2});
+        document.getElementById('totalIVA').textContent = '$' + iva.toLocaleString('es-MX', {minimumFractionDigits: 2});
+        document.getElementById('totalGeneral').textContent = '$' + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
+      }
+
+      function generarNotaVenta(event) {
+        event.preventDefault();
+
+        if (!cotizacionSeleccionada) {
+          mostrarAlerta('Selecciona una cotización primero', 'error');
+          return;
+        }
+
+        var modoProductos = document.querySelector('input[name="modoProductos"]:checked').value;
+        var metodoPago = document.getElementById('metodoPago').value;
+        var condicionesPago = document.getElementById('condicionesPago').value;
+        var fechaEntrega = document.getElementById('fechaEntrega').value;
+        var lugarEntrega = document.getElementById('lugarEntrega').value;
+        var observaciones = document.getElementById('observaciones').value;
+
+        // Recopilar productos según el modo
+        var productosSeleccionados = [];
+        var subtotal = 0;
+
+        if (modoProductos === 'resumido') {
+          // MODO RESUMIDO: Crear una partida única con la descripción editada
+          var codigoResumido = document.getElementById('codigo-resumido').value;
+          var descripcionResumida = document.getElementById('descripcion-resumida').value;
+          var descuentoPorcentaje = window.descuentoPorcentajeResumido || 0;
+          var descuentoPesos = window.descuentoPesosResumido || 0;
+          var importeFinal = window.importeResumido || 0;
+
+          // Calcular subtotal base de todos los productos
+          var totalCantidad = cotizacionSeleccionada.productos.length;
+          var subtotalBase = 0;
+          cotizacionSeleccionada.productos.forEach(function(prod) {
+            subtotalBase += prod.importe || (prod.precioUnitario * prod.cantidad);
+          });
+
+          // Si no hay descuento aplicado, usar el subtotal base
+          if (importeFinal === 0) {
+            importeFinal = subtotalBase;
+          }
+
+          subtotal = importeFinal;
+
+          var productoResumido = {
+            codigo: codigoResumido,
+            descripcion: descripcionResumida,
+            cantidad: totalCantidad,
+            precioUnitario: subtotalBase,
+            descuentoPorcentaje: descuentoPorcentaje,
+            descuentoPesos: descuentoPesos,
+            importe: importeFinal
+          };
+
+          productosSeleccionados.push(productoResumido);
+
+        } else {
+          // MODO DESGLOSADO: Productos seleccionados con códigos editados
+          var checkboxes = document.querySelectorAll('.producto-checkbox:checked');
+
+          checkboxes.forEach(function(checkbox) {
+            var index = parseInt(checkbox.dataset.index);
+            var prod = cotizacionSeleccionada.productos[index];
+            var codigoInput = document.querySelector('.producto-codigo[data-index="' + index + '"]');
+
+            var productoFinal = {
+              codigo: codigoInput ? codigoInput.value : prod.codigo,
+              descripcion: prod.descripcion,
+              cantidad: prod.cantidad,
+              precioUnitario: prod.precioUnitario,
+              descuentoPorcentaje: prod.descuentoPorcentaje || 0,
+              descuentoPesos: prod.descuentoPesos || 0,
+              importe: prod.importe
+            };
+
+            productosSeleccionados.push(productoFinal);
+            subtotal += productoFinal.importe;
+          });
+        }
+
+        if (productosSeleccionados.length === 0) {
+          mostrarAlerta('Selecciona al menos un producto', 'error');
+          return;
+        }
+
+        // Calcular totales
+        var iva = subtotal * 0.16;
+        var total = subtotal + iva;
+
+        // Agregar el folio de cotización al objeto datosCotizacion
+        var datosCotizacionCompletos = Object.assign({}, cotizacionSeleccionada.datosCotizacion);
+        datosCotizacionCompletos.folioCotizacion = cotizacionSeleccionada.folio;
+
+        var datosNotaVenta = {
+          folioCotizacion: cotizacionSeleccionada.folio,
+          modoProductos: modoProductos,
+          metodoPago: metodoPago,
+          condicionesPago: condicionesPago,
+          fechaEntrega: fechaEntrega,
+          lugarEntrega: lugarEntrega,
+          observaciones: observaciones,
+          datosCliente: cotizacionSeleccionada.datosCliente,
+          datosCotizacion: datosCotizacionCompletos,
+          productos: productosSeleccionados,
+          totales: {
+            subtotal: subtotal,
+            iva: iva,
+            total: total
+          }
+        };
+
+        // Mostrar loading
+        document.getElementById('formNotaVenta').style.display = 'none';
+        document.getElementById('loadingGenerar').classList.add('active');
+
+        google.script.run
+          .withSuccessHandler(function(resultado) {
+            document.getElementById('loadingGenerar').classList.remove('active');
+
+            if (resultado.exito) {
+              mostrarAlerta('✅ Nota de Venta generada exitosamente! Folio: ' + resultado.folio, 'success');
+
+              setTimeout(function() {
+                window.open(resultado.url, '_blank');
+                location.reload();
+              }, 2000);
+            } else {
+              mostrarAlerta('❌ ' + resultado.mensaje, 'error');
+              document.getElementById('formNotaVenta').style.display = 'block';
+            }
+          })
+          .withFailureHandler(function(error) {
+            document.getElementById('loadingGenerar').classList.remove('active');
+            document.getElementById('formNotaVenta').style.display = 'block';
+            mostrarAlerta('❌ Error: ' + error.message, 'error');
+          })
+          .generarPDFNotaVenta(datosNotaVenta);
+      }
+
+      function mostrarAlerta(mensaje, tipo) {
+        var alertBox = document.getElementById('alertBox');
+        alertBox.textContent = mensaje;
+        alertBox.className = 'alert ' + tipo + ' active';
+
+        setTimeout(function() {
+          alertBox.classList.remove('active');
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

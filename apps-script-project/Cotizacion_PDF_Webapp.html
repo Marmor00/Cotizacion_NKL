@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generar Cotización Formal - NKL</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #7092BE 0%, #8E8E8E 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #7092BE 0%, #8E8E8E 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-row.full {
+      grid-template-columns: 1fr;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #7092BE;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .info-box {
+      background: #f8f9ff;
+      border-left: 4px solid #7092BE;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .info-box p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .info-box strong {
+      color: #7092BE;
+    }
+
+    #productosTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    #productosTable th {
+      background: #f8f9ff;
+      padding: 12px 8px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #7092BE;
+    }
+
+    #productosTable td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    #productosTable tr:hover {
+      background: #fafafa;
+    }
+
+    #productosTable input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    #productosTable input[type="text"],
+    #productosTable input[type="number"] {
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    #productosTable input[type="number"] {
+      text-align: right;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 14px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7092BE 0%, #8E8E8E 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #555;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #7092BE;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.active {
+      display: block;
+    }
+
+    .alert.success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      color: #155724;
+    }
+
+    .alert.error {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+      color: #721c24;
+    }
+
+    .folio-badge {
+      display: inline-block;
+      background: #7092BE;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📄 Generador de Cotización Formal</h1>
+      <p>Nueva Krystalum Lomelí SA de CV</p>
+    </div>
+
+    <div class="content">
+      <div id="alertBox" class="alert"></div>
+
+      <form id="cotizacionForm">
+        <!-- SECCIÓN 1: Datos del Cliente -->
+        <div class="section">
+          <div class="section-title">👤 Datos del Cliente</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombreCliente">Nombre del Cliente *</label>
+              <input type="text" id="nombreCliente" required>
+            </div>
+            <div class="form-group">
+              <label for="rfcCliente">RFC</label>
+              <input type="text" id="rfcCliente">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="razonSocial">Razón Social</label>
+              <input type="text" id="razonSocial">
+            </div>
+            <div class="form-group">
+              <label for="emailCliente">Email</label>
+              <input type="email" id="emailCliente">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="telefonoCliente">Teléfono</label>
+              <input type="tel" id="telefonoCliente">
+            </div>
+            <div class="form-group">
+              <!-- Espacio vacío para mantener el layout -->
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="domicilioFiscal">Domicilio Fiscal</label>
+              <input type="text" id="domicilioFiscal">
+            </div>
+            <div class="form-group">
+              <label for="domicilioEntrega">Domicilio de Entrega</label>
+              <input type="text" id="domicilioEntrega">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: Datos de la Cotización -->
+        <div class="section">
+          <div class="section-title">📋 Datos de la Cotización</div>
+
+          <div class="info-box">
+            <p><strong>Folio:</strong> <span id="folioDisplay" class="folio-badge">Se generará automáticamente</span></p>
+            <p style="margin-top: 8px;"><strong>Fecha:</strong> <span id="fechaDisplay"></span></p>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="idObra">ID Proyecto *</label>
+              <input type="text" id="idObra" required placeholder="Ej: Las Palmas 3575, Residencial Vista Hermosa, etc.">
+              <small style="color: #666; font-size: 11px; margin-top: 4px; display: block;">
+                💡 Si tienes número de orden (O-3XXX), escríbelo para autocompletar
+              </small>
+              <div id="infoProyecto" style="display: none; margin-top: 8px; padding: 10px; background: #e8f5e9; border-left: 3px solid #4caf50; border-radius: 4px; font-size: 12px;">
+                <strong>✅ Proyecto encontrado:</strong>
+                <div id="datosProyecto" style="margin-top: 5px; color: #2e7d32;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="vigencia">Vigencia (días)</label>
+              <input type="number" id="vigencia" value="1" min="1">
+            </div>
+            <div class="form-group">
+              <label for="tiempoEntrega">Tiempo de Entrega (días)</label>
+              <input type="number" id="tiempoEntrega" value="0" min="0">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="vendedor">Vendedor *</label>
+              <select id="vendedor" required>
+                <option value="">Selecciona un vendedor...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Información del Vendedor</label>
+              <div id="infoVendedor" style="padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 13px; min-height: 40px; color: #666;">
+                Selecciona un vendedor para ver su información
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: #fff3cd; padding: 12px; border-radius: 6px; border-left: 4px solid #ffc107;">
+                <input type="checkbox" id="modoPrecioCerrado" style="width: 20px; height: 20px;">
+                <div>
+                  <span style="font-weight: 600; color: #856404;">💰 Modo B - Precio Cerrado (con descuento IVA 13.79%)</span>
+                  <small style="display: block; color: #856404; font-size: 11px; margin-top: 4px;">
+                    ⚠️ Se generarán 2 PDFs: <strong>PDF Cliente</strong> (sin descuentos, para enviar) y <strong>PDF Interno</strong> (con desc. 13.79% por partida, para sistema)
+                  </small>
+                  <small style="display: block; color: #856404; font-size: 11px; margin-top: 2px;">
+                    📊 Los datos se guardarán con el <strong>precio REAL</strong> (después de aplicar descuentos)
+                  </small>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: Productos -->
+        <div class="section">
+          <div class="section-title">📦 Productos a Incluir</div>
+
+          <div class="form-row" style="margin-bottom: 15px;">
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="modoManual" onchange="toggleModoManual()" style="width: 20px; height: 20px;">
+                <span>Modo Manual (no cargar desde Generador)</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="productosLoading" class="loading">
+            <div class="spinner"></div>
+            <p>Cargando productos desde Generador...</p>
+          </div>
+
+          <div id="productosContainer" style="display: none;">
+            <div id="btnAgregarProductoContainer" style="display: none; margin-bottom: 10px;">
+              <button type="button" class="btn btn-secondary" onclick="agregarProductoManual()">
+                ➕ Agregar Producto
+              </button>
+            </div>
+
+            <table id="productosTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px;">Incluir</th>
+                  <th style="width: 50px;">No.</th>
+                  <th style="width: 100px;">Código</th>
+                  <th>Descripción</th>
+                  <th style="width: 70px;">Cantidad</th>
+                  <th style="width: 100px;">P.U.</th>
+                  <th style="width: 80px;">% Desc.</th>
+                  <th style="width: 100px;">$ Desc.</th>
+                  <th style="width: 100px;">Importe</th>
+                </tr>
+              </thead>
+              <tbody id="productosTableBody">
+                <!-- Se llenará dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="buttons">
+          <button type="submit" class="btn btn-primary" id="btnGenerar">
+            ✨ Generar PDF
+          </button>
+        </div>
+      </form>
+
+      <div id="loadingGenerar" class="loading">
+        <div class="spinner"></div>
+        <p>Generando PDF de cotización...</p>
+        <p style="font-size: 12px; color: #888; margin-top: 10px;">Esto puede tomar unos segundos</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mostrar fecha actual
+    document.getElementById('fechaDisplay').textContent = new Date().toLocaleDateString('es-MX');
+
+    // Variable global para almacenar datos de vendedores
+    var vendedoresData = [];
+
+    // Cargar productos y vendedores al iniciar
+    window.addEventListener('load', function() {
+      cargarVendedores();
+      if (!document.getElementById('modoManual').checked) {
+        cargarProductos();
+      }
+    });
+
+    // Cargar vendedores desde la hoja Personal
+    function cargarVendedores() {
+      google.script.run
+        .withSuccessHandler(function(vendedores) {
+          vendedoresData = vendedores;
+          var select = document.getElementById('vendedor');
+
+          vendedores.forEach(function(v) {
+            var option = document.createElement('option');
+            option.value = v.nombre;
+            option.textContent = v.nombre + ' - ' + v.puesto;
+            option.dataset.correo = v.correo;
+            option.dataset.celular = v.celular;
+            option.dataset.puesto = v.puesto;
+            select.appendChild(option);
+          });
+        })
+        .withFailureHandler(function(error) {
+          console.error('Error al cargar vendedores:', error);
+        })
+        .obtenerVendedores();
+    }
+
+    // Mostrar información del vendedor seleccionado
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('vendedor').addEventListener('change', function() {
+        var select = this;
+        var selectedOption = select.options[select.selectedIndex];
+        var infoDiv = document.getElementById('infoVendedor');
+
+        if (select.value) {
+          var correo = selectedOption.dataset.correo || '';
+          var celular = selectedOption.dataset.celular || '';
+          var puesto = selectedOption.dataset.puesto || '';
+
+          infoDiv.innerHTML = '<strong>' + puesto + '</strong><br>' +
+                              '📧 ' + correo + '<br>' +
+                              '📱 ' + celular;
+          infoDiv.style.color = '#333';
+        } else {
+          infoDiv.innerHTML = 'Selecciona un vendedor para ver su información';
+          infoDiv.style.color = '#666';
+        }
+      });
+
+      // Autocompletar ID Proyecto cuando se escribe un número de orden
+      var inputIdObra = document.getElementById('idObra');
+      var infoProyecto = document.getElementById('infoProyecto');
+      var datosProyecto = document.getElementById('datosProyecto');
+      var timeoutBusqueda;
+
+      inputIdObra.addEventListener('input', function() {
+        var valor = this.value.trim();
+
+        // Cancelar búsqueda anterior si existe
+        if (timeoutBusqueda) {
+          clearTimeout(timeoutBusqueda);
+        }
+
+        // Detectar si es un número de orden (formato O-XXXX)
+        var esOrden = /^O-\d+$/i.test(valor);
+
+        if (esOrden) {
+          // Esperar 500ms antes de buscar (debouncing)
+          timeoutBusqueda = setTimeout(function() {
+            google.script.run
+              .withSuccessHandler(function(proyecto) {
+                if (proyecto) {
+                  // Autocompletar el campo con el nombre del proyecto
+                  inputIdObra.value = proyecto.nombre;
+
+                  // Mostrar información del proyecto encontrado
+                  datosProyecto.innerHTML =
+                    '<strong>Número de Orden:</strong> ' + proyecto.orden + '<br>' +
+                    '<strong>Nombre del Proyecto:</strong> ' + proyecto.nombre;
+                  infoProyecto.style.display = 'block';
+                } else {
+                  // No se encontró el proyecto
+                  infoProyecto.style.display = 'none';
+                }
+              })
+              .withFailureHandler(function(error) {
+                console.error('Error al buscar proyecto:', error);
+                infoProyecto.style.display = 'none';
+              })
+              .buscarProyectoPorOrden(valor.toUpperCase());
+          }, 500);
+        } else {
+          // No es un número de orden, ocultar info
+          infoProyecto.style.display = 'none';
+        }
+      });
+    });
+
+    function cargarProductos() {
+      document.getElementById('productosLoading').classList.add('active');
+
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          document.getElementById('productosLoading').classList.remove('active');
+
+          if (resultado.exito) {
+            mostrarProductos(resultado.productos);
+            document.getElementById('productosContainer').style.display = 'block';
+          } else {
+            mostrarAlerta('Error al cargar productos: ' + resultado.mensaje, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          document.getElementById('productosLoading').classList.remove('active');
+          mostrarAlerta('Error: ' + error.message, 'error');
+        })
+        .parsearHojaGenerador();
+    }
+
+    // Variable global para almacenar productos
+    var productosGlobal = [];
+
+    function mostrarProductos(productos) {
+      productosGlobal = productos;
+      var tbody = document.getElementById('productosTableBody');
+      tbody.innerHTML = '';
+
+      if (!productos || productos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: #888;">No se encontraron productos en la hoja Generador</td></tr>';
+        return;
+      }
+
+      productos.forEach(function(producto, index) {
+        var tr = document.createElement('tr');
+
+        var codigo = producto.clave || producto.categoria || '';
+        var descripcion = producto.descripcion || 'Sin descripción';
+        var cantidad = producto.piezas || 1;
+        var precioUnitario = producto.precioUnitario || producto.precioVenta || 0;
+        var importe = precioUnitario * cantidad;
+
+        tr.innerHTML = `
+          <td><input type="checkbox" class="producto-checkbox" checked data-index="${index}"></td>
+          <td>${index + 1}</td>
+          <td><input type="text" class="producto-codigo" value="${codigo}" data-index="${index}"></td>
+          <td>${descripcion.substring(0, 60)}${descripcion.length > 60 ? '...' : ''}</td>
+          <td class="text-right">${cantidad}</td>
+          <td class="text-right">$${precioUnitario.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td><input type="number" class="producto-descuento" value="0" min="0" max="100" step="0.1" data-index="${index}" onchange="calcularDescuento(${index})"></td>
+          <td class="text-right" id="desc-pesos-${index}">$0.00</td>
+          <td class="text-right" id="importe-${index}">$${importe.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      calcularTotales();
+    }
+
+    // Manejar envío del formulario
+    document.getElementById('cotizacionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Recopilar datos del formulario
+      var datosCliente = {
+        nombre: document.getElementById('nombreCliente').value,
+        rfc: document.getElementById('rfcCliente').value,
+        razonSocial: document.getElementById('razonSocial').value,
+        email: document.getElementById('emailCliente').value,
+        telefono: document.getElementById('telefonoCliente').value,
+        domicilioFiscal: document.getElementById('domicilioFiscal').value,
+        domicilioEntrega: document.getElementById('domicilioEntrega').value
+      };
+
+      // Obtener datos del vendedor seleccionado
+      var selectVendedor = document.getElementById('vendedor');
+      var selectedOption = selectVendedor.options[selectVendedor.selectedIndex];
+
+      var datosCotizacion = {
+        idObra: document.getElementById('idObra').value,
+        vigencia: parseInt(document.getElementById('vigencia').value),
+        tiempoEntrega: parseInt(document.getElementById('tiempoEntrega').value),
+        vendedor: selectVendedor.value,
+        vendedorCorreo: selectedOption.dataset.correo || '',
+        vendedorCelular: selectedOption.dataset.celular || '',
+        vendedorPuesto: selectedOption.dataset.puesto || '',
+        modoPrecioCerrado: document.getElementById('modoPrecioCerrado').checked
+      };
+
+      // Determinar si estamos en modo manual
+      var modoManual = document.getElementById('modoManual').checked;
+
+      // Recopilar productos seleccionados con códigos editados y descuentos
+      var productosSeleccionados = [];
+      var checkboxes = document.querySelectorAll('.producto-checkbox:checked');
+
+      checkboxes.forEach(function(checkbox) {
+        var index = parseInt(checkbox.dataset.index);
+        var codigoInput = document.querySelector('.producto-codigo[data-index="' + index + '"]');
+        var descuentoInput = document.querySelector('.producto-descuento[data-index="' + index + '"]');
+
+        var producto = productosGlobal[index];
+
+        // Si es producto manual, actualizar los datos del producto desde los inputs
+        if (producto.tipo === 'MANUAL') {
+          var descripcionInput = document.querySelector('.producto-descripcion[data-index="' + index + '"]');
+          var cantidadInput = document.querySelector('.producto-cantidad[data-index="' + index + '"]');
+          var puInput = document.querySelector('.producto-pu[data-index="' + index + '"]');
+
+          producto.descripcion = descripcionInput ? descripcionInput.value : '';
+          producto.piezas = cantidadInput ? parseFloat(cantidadInput.value) : 1;
+          producto.precioUnitario = puInput ? parseFloat(puInput.value) : 0;
+          producto.clave = codigoInput.value;
+        }
+
+        var cantidad = producto.piezas || 1;
+        var precioUnitario = producto.precioUnitario || producto.precioVenta || 0;
+        var descuentoPorcentaje = parseFloat(descuentoInput.value) || 0;
+        var descuentoPesos = (precioUnitario * cantidad * descuentoPorcentaje) / 100;
+        var importeFinal = (precioUnitario * cantidad) - descuentoPesos;
+
+        var itemSeleccionado = {
+          index: index,
+          codigo: codigoInput.value,
+          descuentoPorcentaje: descuentoPorcentaje,
+          descuentoPesos: descuentoPesos,
+          importeFinal: importeFinal
+        };
+
+        // En modo manual, incluir el producto completo
+        if (modoManual) {
+          itemSeleccionado.producto = producto;
+        }
+
+        productosSeleccionados.push(itemSeleccionado);
+      });
+
+      if (productosSeleccionados.length === 0) {
+        mostrarAlerta('Por favor selecciona al menos un producto', 'error');
+        return;
+      }
+
+      // Mostrar loading
+      document.getElementById('cotizacionForm').style.display = 'none';
+      document.getElementById('loadingGenerar').classList.add('active');
+
+      // Llamar al backend
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          document.getElementById('loadingGenerar').classList.remove('active');
+
+          if (resultado.exito) {
+            mostrarAlerta('✅ PDF generado exitosamente!\n\nFolio: ' + resultado.folio + '\n\nURL: ' + resultado.url, 'success');
+
+            // Preguntar si quiere guardar el contacto
+            setTimeout(function() {
+              var guardar = confirm('¿Deseas guardar este contacto en la base de datos?\n\n' +
+                'Nombre: ' + resultado.datosCliente.nombre + '\n' +
+                'Email: ' + (resultado.datosCliente.email || 'N/A'));
+
+              if (guardar) {
+                // Guardar contacto
+                google.script.run
+                  .withSuccessHandler(function(resultadoGuardar) {
+                    if (resultadoGuardar.exito) {
+                      alert('✅ ' + resultadoGuardar.mensaje);
+                    } else {
+                      alert('ℹ️ ' + resultadoGuardar.mensaje);
+                    }
+                  })
+                  .withFailureHandler(function(error) {
+                    alert('Error al guardar contacto: ' + error.message);
+                  })
+                  .guardarContacto(resultado.datosCliente);
+              }
+            }, 1000);
+
+            // No cerrar automáticamente - dejar mensaje visible
+            // El usuario puede copiar el URL y cerrar manualmente
+          } else {
+            document.getElementById('cotizacionForm').style.display = 'block';
+            mostrarAlerta('Error al generar PDF: ' + resultado.mensaje, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          document.getElementById('loadingGenerar').classList.remove('active');
+          document.getElementById('cotizacionForm').style.display = 'block';
+          mostrarAlerta('Error: ' + error.message, 'error');
+        })
+        .generarPDFCotizacion(datosCliente, datosCotizacion, productosSeleccionados, modoManual);
+    });
+
+    function calcularDescuento(index) {
+      var producto = productosGlobal[index];
+      if (!producto) return;
+
+      var cantidad = producto.piezas || 1;
+      var precioUnitario = producto.precioUnitario || producto.precioVenta || 0;
+      var descuentoPorcentaje = parseFloat(document.querySelector('.producto-descuento[data-index="' + index + '"]').value) || 0;
+
+      // Calcular descuento en pesos
+      var descuentoPesos = (precioUnitario * cantidad * descuentoPorcentaje) / 100;
+
+      // Calcular importe final
+      var importe = (precioUnitario * cantidad) - descuentoPesos;
+
+      // Actualizar valores en la tabla
+      document.getElementById('desc-pesos-' + index).textContent = '$' + descuentoPesos.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('importe-' + index).textContent = '$' + importe.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      calcularTotales();
+    }
+
+    function calcularTotales() {
+      var subtotal = 0;
+
+      var checkboxes = document.querySelectorAll('.producto-checkbox:checked');
+      checkboxes.forEach(function(checkbox) {
+        var index = parseInt(checkbox.dataset.index);
+        var importeText = document.getElementById('importe-' + index).textContent;
+        var importe = parseFloat(importeText.replace('$', '').replace(',', ''));
+        if (!isNaN(importe)) {
+          subtotal += importe;
+        }
+      });
+
+      var iva = subtotal * 0.16;
+      var total = subtotal + iva;
+
+      // Podrías mostrar estos totales en el DOM si agregas elementos para ello
+      console.log('Subtotal:', subtotal, 'IVA:', iva, 'Total:', total);
+    }
+
+    function toggleModoManual() {
+      var modoManual = document.getElementById('modoManual').checked;
+      var productosLoading = document.getElementById('productosLoading');
+      var productosContainer = document.getElementById('productosContainer');
+      var btnAgregarContainer = document.getElementById('btnAgregarProductoContainer');
+
+      if (modoManual) {
+        // Activar modo manual
+        productosLoading.classList.remove('active');
+        productosContainer.style.display = 'block';
+        btnAgregarContainer.style.display = 'block';
+
+        // Limpiar tabla
+        productosGlobal = [];
+        document.getElementById('productosTableBody').innerHTML = '';
+
+        mostrarAlerta('Modo manual activado. Agrega productos manualmente.', 'success');
+      } else {
+        // Desactivar modo manual - cargar desde Generador
+        btnAgregarContainer.style.display = 'none';
+        productosContainer.style.display = 'none';
+        cargarProductos();
+      }
+    }
+
+    var contadorProductosManual = 0;
+
+    function agregarProductoManual() {
+      var tbody = document.getElementById('productosTableBody');
+      var index = productosGlobal.length;
+      contadorProductosManual++;
+
+      // Crear producto vacío
+      var productoVacio = {
+        tipo: 'MANUAL',
+        descripcion: '',
+        categoria: '',
+        modelo: '',
+        clave: '',
+        piezas: 1,
+        precioVenta: 0,
+        importe: 0,
+        precioUnitario: 0,
+        codigoEditado: ''
+      };
+
+      productosGlobal.push(productoVacio);
+
+      var tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="checkbox" class="producto-checkbox" checked data-index="${index}"></td>
+        <td>${index + 1}</td>
+        <td><input type="text" class="producto-codigo" value="" data-index="${index}" placeholder="Código"></td>
+        <td><input type="text" class="producto-descripcion" value="" data-index="${index}" placeholder="Descripción del producto"></td>
+        <td><input type="number" class="producto-cantidad" value="1" min="1" data-index="${index}" onchange="actualizarProductoManual(${index})"></td>
+        <td><input type="number" class="producto-pu" value="0" min="0" step="0.01" data-index="${index}" onchange="actualizarProductoManual(${index})"></td>
+        <td><input type="number" class="producto-descuento" value="0" min="0" max="100" step="0.1" data-index="${index}" onchange="calcularDescuento(${index})"></td>
+        <td class="text-right" id="desc-pesos-${index}">$0.00</td>
+        <td class="text-right" id="importe-${index}">$0.00</td>
+      `;
+
+      tbody.appendChild(tr);
+    }
+
+    function actualizarProductoManual(index) {
+      var cantidad = parseFloat(document.querySelector('.producto-cantidad[data-index="' + index + '"]').value) || 1;
+      var precioUnitario = parseFloat(document.querySelector('.producto-pu[data-index="' + index + '"]').value) || 0;
+
+      // Actualizar producto en array global
+      productosGlobal[index].piezas = cantidad;
+      productosGlobal[index].precioUnitario = precioUnitario;
+      productosGlobal[index].precioVenta = precioUnitario;
+      productosGlobal[index].importe = cantidad * precioUnitario;
+
+      // Recalcular descuento
+      calcularDescuento(index);
+    }
+
+    function mostrarAlerta(mensaje, tipo) {
+      var alertBox = document.getElementById('alertBox');
+      alertBox.textContent = mensaje;
+      alertBox.className = 'alert ' + tipo + ' active';
+
+      setTimeout(function() {
+        alertBox.classList.remove('active');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <title>Generador de Documentos</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #7092BE 0%, #8E8E8E 100%);
+        padding: 40px 20px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 50px;
+      }
+
+      .header h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .header p {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .option-card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .option-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #7092BE 0%, #8E8E8E 100%);
+      }
+
+      .option-card.cotizacion::before {
+        background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+      }
+
+      .option-card.nota-venta::before {
+        background: linear-gradient(90deg, #1b5e20 0%, #43a047 100%);
+      }
+
+      .option-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      }
+
+      .option-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .option-card.cotizacion .option-icon {
+        color: #1a237e;
+      }
+
+      .option-card.nota-venta .option-icon {
+        color: #1b5e20;
+      }
+
+      .option-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #333;
+      }
+
+      .option-description {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .option-features {
+        text-align: left;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+
+      .feature-item {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .feature-item::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+      }
+
+      .option-card.cotizacion .feature-item::before {
+        color: #1a237e;
+      }
+
+      .option-card.nota-venta .feature-item::before {
+        color: #1b5e20;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: white;
+        width: 100%;
+      }
+
+      .btn-cotizacion {
+        background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+      }
+
+      .btn-cotizacion:hover {
+        background: linear-gradient(135deg, #0d1642 0%, #283593 100%);
+      }
+
+      .btn-nota-venta {
+        background: linear-gradient(135deg, #1b5e20 0%, #43a047 100%);
+      }
+
+      .btn-nota-venta:hover {
+        background: linear-gradient(135deg, #104d16 0%, #2e7d32 100%);
+      }
+
+      .footer {
+        text-align: center;
+        color: white;
+        opacity: 0.8;
+        font-size: 13px;
+      }
+
+      @media (max-width: 768px) {
+        .options {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📄 Sistema de Documentos</h1>
+        <p>Selecciona el tipo de documento que deseas generar</p>
+      </div>
+
+      <div class="options">
+        <!-- OPCIÓN COTIZACIÓN -->
+        <div class="option-card cotizacion" onclick="irACotizacion()">
+          <span class="option-icon">📝</span>
+          <div class="option-title">Cotización</div>
+          <div class="option-description">
+            Genera una cotización formal para presentar a clientes con productos del sistema Generador.
+          </div>
+          <div class="option-features">
+            <div class="feature-item">Carga productos desde Generador</div>
+            <div class="feature-item">Aplica descuentos personalizados</div>
+            <div class="feature-item">Folios consecutivos (7117+)</div>
+            <div class="feature-item">PDF con colores corporativos</div>
+          </div>
+          <button class="btn btn-cotizacion">Generar Cotización</button>
+        </div>
+
+        <!-- OPCIÓN NOTA DE VENTA -->
+        <div class="option-card nota-venta" onclick="irANotaVenta()">
+          <span class="option-icon">📄</span>
+          <div class="option-title">Nota de Venta</div>
+          <div class="option-description">
+            Convierte una cotización existente en nota de venta con datos de pago y entrega.
+          </div>
+          <div class="option-features">
+            <div class="feature-item">Basada en cotizaciones previas</div>
+            <div class="feature-item">Modo resumido o desglosado</div>
+            <div class="feature-item">Datos de pago y entrega</div>
+            <div class="feature-item">PDF en verde distintivo</div>
+          </div>
+          <button class="btn btn-nota-venta">Generar Nota de Venta</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        Nueva Krystalum Lomelí - Sistema de Gestión de Documentos
+      </div>
+    </div>
+
+    <script>
+      function irACotizacion() {
+        // Cerrar el modal actual y abrir cotización
+        google.script.host.close();
+        google.script.run.abrirWebappCotizacion();
+      }
+
+      function irANotaVenta() {
+        // Cerrar el modal actual y abrir nota de venta
+        google.script.host.close();
+        google.script.run.mostrarFormularioNotaVenta();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,91 @@
+,,,,,,,,,,79,
+Proyecto,RIOJA 521,,,,RIOJA 521 11/12/25,,Subtotal,"$56,437.32",,Total Material,"$24,537.96"
+,,,,,,,,,,,
+Datos de la Pieza,,,Descripción del Modelo,,,,,,,Totales,
+Categoría,2500,,"Puerta abatible de medidas generales 1.20 x 2.50m, conformada por una hoja con duela lisa horizontal dos vistas, chapa doble manija mod. Guadalajara, Mca. Herralum o similar y guardapolvos, en aluminio línea Euroalum S2500 y pintura color negro. Incluye lo necesario para su correcta instalación y ejecución.        
+        
+        
+        
+        ",,,,,,,Pecio de Venta,"$16,286.04"
+Modelo,2500-A-abatible-duela completa horizontal 2 vistas-,,,,,,,,,Importe,"$16,286.04"
+Clave,ALU-25´,,,,,,,,,,
+Acabado,NP ,,,,,,,,,Costos,
+Cristal,,,Material,,,,,,,Costo de Material,"$7,080.89"
+Medidas,,,Cantidad,Unidad,Descripción,Costo,Formula,P.U.,,Costo por Importe,"$7,080.89"
+Largos,Altos,,7.44,perfil por ml,1681 Marco puerta,$90.86,=(Largo1+Alto1+Alto1)*Desp,$675.98,,,
+1.20,2.50,,8.88,perfil por ml,1682 Hoja puerta apertura exterior,$102.44,=((Largo1*2)+(Alto1*2))*Desp,$909.64,,,
+,,,8.88,perfil por ml,1684 Junquillo recto,$23.89,=((Largo1*2)+(Alto1*2))*Desp,$212.11,,,
+,,,29.13,perfil por ml,26617 LISA DOBLE,$119.57,=(((Alto1/0.13)+1)*Largo1)*Desp,"$3,483.02",,,
+Medidas regulares,,,3.00,pza,M-227 BISAGRA F232 TRES PALAS,$57.40,3,$172.19,,,
+,,,1.00,pza,1285000BL CHAPA GUADALAJARA AC-INOX BLANCA,$659.60,1,$659.60,,,
+Factores,,,6.00,pza,M-260 ESCUADRA ESC 8-3731-125 P/PUERTA,$18.03,6,$108.16,,,
+Desperdicio,1.20,,1.00,jgo,M-102 Tensor 1.20 x 3/8,$24.87,1,$24.87,,,
+Factor,2.30,,1.00,pza,M-94 Sella puerta de  1.20,$40.76,1,$40.76,,,
+Piezas,1,,19.80,ml,M-124 Vinil cualquier medida,$6.72,=((Largo1+Alto1+Alto1)*2)+((Largo1*2)+(Alto1*2)),$133.14,,,
+,,,47.86,ml,M-141 Silicón,$10.78,=(Largo1+Largo1+Alto1+Alto1)+(((Alto1/0.13)+1)*2),$515.73,,,
+,,,14.80,ml,M-142 Acrilastic,$6.47,=(Largo1+Largo1+Alto1+Alto1)*2,$95.69,,,
+,,,1.00,pda,TOR-01 Partida de tornilleria,$50.00,1,$50.00,,,
+,,,,,,,,,,,
+Datos de la Pieza,,,Descripción del Modelo,,,,,,,Totales,
+Categoría,2500,,"Puerta abatible de medidas generales 1.20 x 2.50m, conformada por una hoja con duela lisa horizontal dos vistas, chapa doble manija mod. Guadalajara, Mca. Herralum o similar y guardapolvos, en aluminio línea Euroalum S2500 y pintura color negro. Incluye lo necesario para su correcta instalación y ejecución.        
+        
+        
+        
+        ",,,,,,,Pecio de Venta,"$16,286.04"
+Modelo,2500-A-abatible-duela completa horizontal 2 vistas-,,,,,,,,,Importe,"$16,286.04"
+Clave,ALU-25´,,,,,,,,,,
+Acabado,NP ,,,,,,,,,Costos,
+Cristal,,,Material,,,,,,,Costo de Material,"$7,080.89"
+Medidas,,,Cantidad,Unidad,Descripción,Costo,Formula,P.U.,,Costo por Importe,"$7,080.89"
+Largos,Altos,,7.44,perfil por ml,1681 Marco puerta,$90.86,=(Largo1+Alto1+Alto1)*Desp,$675.98,,,
+1.20,2.50,,8.88,perfil por ml,1682 Hoja puerta apertura exterior,$102.44,=((Largo1*2)+(Alto1*2))*Desp,$909.64,,,
+,,,8.88,perfil por ml,1684 Junquillo recto,$23.89,=((Largo1*2)+(Alto1*2))*Desp,$212.11,,,
+,,,29.13,perfil por ml,26617 LISA DOBLE,$119.57,=(((Alto1/0.13)+1)*Largo1)*Desp,"$3,483.02",,,
+Medidas regulares,,,3.00,pza,M-227 BISAGRA F232 TRES PALAS,$57.40,3,$172.19,,,
+,,,1.00,pza,1285000BL CHAPA GUADALAJARA AC-INOX BLANCA,$659.60,1,$659.60,,,
+Factores,,,6.00,pza,M-260 ESCUADRA ESC 8-3731-125 P/PUERTA,$18.03,6,$108.16,,,
+Desperdicio,1.20,,1.00,jgo,M-102 Tensor 1.20 x 3/8,$24.87,1,$24.87,,,
+Factor,2.30,,1.00,pza,M-94 Sella puerta de  1.20,$40.76,1,$40.76,,,
+Piezas,1,,19.80,ml,M-124 Vinil cualquier medida,$6.72,=((Largo1+Alto1+Alto1)*2)+((Largo1*2)+(Alto1*2)),$133.14,,,
+,,,47.86,ml,M-141 Silicón,$10.78,=(Largo1+Largo1+Alto1+Alto1)+(((Alto1/0.13)+1)*2),$515.73,,,
+,,,14.80,ml,M-142 Acrilastic,$6.47,=(Largo1+Largo1+Alto1+Alto1)*2,$95.69,,,
+,,,1.00,pda,TOR-01 Partida de tornilleria,$50.00,1,$50.00,,,
+,,,,,,,,,,,
+Medidas,,,Descripción del Modelo,,,,,,,Totales,
+Largos,Altos,,"CRISTAL 1  Antiestornudos, de medidas generales 0.59 + 0.58 x 0.30m, con formado con cristal claro 6mm templado CPP, sujeto mediante conectores en la parte inferior y uno para la unión a escuadra, acabado satinado, mca. HERRALUM. Incluye lo necesario para su correcta instalación y ejecución",,,,,,,Pecio de Venta,"$7,579.19"
+0.59,0.30,,,,,,,,,Importe,"$7,579.19"
+0.58,0.30,,,,,,,,,,
+,,,,,,,,,,Costos,
+Especiales...,,,,,,,,,,Costo de Material,"$3,295.30"
+,,,,,,,,,,Costo por Importe,"$3,295.30"
+Factores,,,Materiales,,,,,,,,
+Desperdicio,1.20,,Cantidad,Unidad,Descripción,Costo,Formula,P.U.,,,
+Factor,2.30,,4.00,pz,1227000SA - CONECTOR GRAPA VALLARTA CHICO SATIN,$70.13,,$280.50,,,
+Piezas,1,,1.00,pz,1147001SA - CONECTOR ESCUADRA VID-VID A 90° AC INOX 304 SATIN,$140.68,,$140.68,,,
+PRODUCTO NUEVO,,,0.35,m2,C-6-T - Claro 6mm templado,$496.08,,$174.12,,,
+,,,9.00,m2,DTPCH - Decorativa tipo persiana chica,$300.00,,"$2,700.00",,,
+,,,,,,,,,,,
+Datos de la Pieza,,,Descripción del Modelo,,,,,,,Totales,
+Categoría,2500,,"Puerta abatible de medidas generales 1.20 x 2.50m, conformada por una hoja con duela lisa horizontal dos vistas, chapa doble manija mod. Guadalajara, Mca. Herralum o similar y guardapolvos, en aluminio línea Euroalum S2500 y pintura color negro. Incluye lo necesario para su correcta instalación y ejecución.        
+        
+        
+        
+        ",,,,,,,Pecio de Venta,"$16,286.04"
+Modelo,2500-A-abatible-duela completa horizontal 2 vistas-,,,,,,,,,Importe,"$16,286.04"
+Clave,ALU-25´,,,,,,,,,,
+Acabado,NP ,,,,,,,,,Costos,
+Cristal,,,Material,,,,,,,Costo de Material,"$7,080.89"
+Medidas,,,Cantidad,Unidad,Descripción,Costo,Formula,P.U.,,Costo por Importe,"$7,080.89"
+Largos,Altos,,7.44,perfil por ml,1681 Marco puerta,$90.86,=(Largo1+Alto1+Alto1)*Desp,$675.98,,,
+1.20,2.50,,8.88,perfil por ml,1682 Hoja puerta apertura exterior,$102.44,=((Largo1*2)+(Alto1*2))*Desp,$909.64,,,
+,,,8.88,perfil por ml,1684 Junquillo recto,$23.89,=((Largo1*2)+(Alto1*2))*Desp,$212.11,,,
+,,,29.13,perfil por ml,26617 LISA DOBLE,$119.57,=(((Alto1/0.13)+1)*Largo1)*Desp,"$3,483.02",,,
+Medidas regulares,,,3.00,pza,M-227 BISAGRA F232 TRES PALAS,$57.40,3,$172.19,,,
+,,,1.00,pza,1285000BL CHAPA GUADALAJARA AC-INOX BLANCA,$659.60,1,$659.60,,,
+Factores,,,6.00,pza,M-260 ESCUADRA ESC 8-3731-125 P/PUERTA,$18.03,6,$108.16,,,
+Desperdicio,1.20,,1.00,jgo,M-102 Tensor 1.20 x 3/8,$24.87,1,$24.87,,,
+Factor,2.30,,1.00,pza,M-94 Sella puerta de  1.20,$40.76,1,$40.76,,,
+Piezas,1,,19.80,ml,M-124 Vinil cualquier medida,$6.72,=((Largo1+Alto1+Alto1)*2)+((Largo1*2)+(Alto1*2)),$133.14,,,
+,,,47.86,ml,M-141 Silicón,$10.78,=(Largo1+Largo1+Alto1+Alto1)+(((Alto1/0.13)+1)*2),$515.73,,,
+,,,14.80,ml,M-142 Acrilastic,$6.47,=(Largo1+Largo1+Alto1+Alto1)*2,$95.69,,,
+,,,1.00,pda,TOR-01 Partida de tornilleria,$50.00,1,$50.00,,,
