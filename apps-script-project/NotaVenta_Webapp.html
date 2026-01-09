@@ -256,9 +256,34 @@
 
         <form id="formNotaVenta" onsubmit="generarNotaVenta(event)">
 
-          <!-- SELECCIÓN DE COTIZACIÓN -->
+          <!-- SELECTOR DE MODO -->
           <div class="section">
-            <div class="section-title">1. Seleccionar Cotización</div>
+            <div class="section-title">Modo de Creación</div>
+
+            <div class="radio-group" style="margin-bottom: 20px;">
+              <label class="radio-option" style="background: #e8f5e9; border: 2px solid #4caf50; border-radius: 8px; padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <input type="radio" name="modoCreacion" value="conCotizacion" checked onchange="cambiarModoCreacion()" style="width: 20px; height: 20px;">
+                <div>
+                  <span style="font-weight: 600; color: #1b5e20;">📋 Con Cotización</span>
+                  <small style="display: block; color: #555; font-size: 12px; margin-top: 4px;">Crear nota de venta desde una cotización existente</small>
+                </div>
+              </label>
+
+              <label class="radio-option" style="background: #fff3e0; border: 2px solid #ff9800; border-radius: 8px; padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="modoCreacion" value="manual" onchange="cambiarModoCreacion()" style="width: 20px; height: 20px;">
+                <div>
+                  <span style="font-weight: 600; color: #e65100;">✏️ Manual (Sin Cotización)</span>
+                  <small style="display: block; color: #555; font-size: 12px; margin-top: 4px;">Crear nota de venta desde cero, sin cotización previa</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- SECCIÓN CON COTIZACIÓN -->
+          <div id="seccionConCotizacion">
+            <!-- SELECCIÓN DE COTIZACIÓN -->
+            <div class="section">
+              <div class="section-title">1. Seleccionar Cotización</div>
 
             <div class="form-group">
               <label for="selectCotizacion">Cotización Base:</label>
@@ -370,6 +395,122 @@
               <textarea id="observaciones" placeholder="Notas o comentarios adicionales..."></textarea>
             </div>
           </div>
+
+          </div> <!-- Fin seccionConCotizacion -->
+
+          <!-- SECCIÓN MANUAL (SIN COTIZACIÓN) -->
+          <div id="seccionManual" style="display: none;">
+
+            <!-- DATOS DEL CLIENTE -->
+            <div class="section">
+              <div class="section-title">1. Datos del Cliente</div>
+
+              <div class="form-group">
+                <label for="nombreClienteManual">Nombre del Cliente: *</label>
+                <input type="text" id="nombreClienteManual" placeholder="Nombre completo o razón social">
+              </div>
+
+              <div class="form-group">
+                <label for="razonSocialManual">Razón Social:</label>
+                <input type="text" id="razonSocialManual" placeholder="Razón social (si aplica)">
+              </div>
+
+              <div class="form-group">
+                <label for="contactoManual">Contacto:</label>
+                <input type="text" id="contactoManual" placeholder="Teléfono o email">
+              </div>
+
+              <div class="form-group">
+                <label for="domicilioManual">Domicilio:</label>
+                <input type="text" id="domicilioManual" placeholder="Dirección completa">
+              </div>
+            </div>
+
+            <!-- DATOS DE LA NOTA DE VENTA -->
+            <div class="section">
+              <div class="section-title">2. Información de la Nota de Venta</div>
+
+              <div class="form-group">
+                <label for="proyectoManual">Proyecto / Obra:</label>
+                <input type="text" id="proyectoManual" placeholder="Nombre del proyecto u obra">
+              </div>
+
+              <div class="form-group">
+                <label for="vendedorManual">Vendedor:</label>
+                <input type="text" id="vendedorManual" placeholder="Nombre del vendedor">
+              </div>
+            </div>
+
+            <!-- PRODUCTOS MANUALES -->
+            <div class="section">
+              <div class="section-title">3. Productos</div>
+
+              <div id="productosManualContainer">
+                <!-- Aquí se agregarán productos dinámicamente -->
+              </div>
+
+              <button type="button" class="btn btn-secondary" onclick="agregarProductoManual()" style="margin-top: 10px;">
+                ➕ Agregar Producto
+              </button>
+            </div>
+
+            <!-- TOTALES MANUAL -->
+            <div class="section">
+              <div class="section-title">4. Totales</div>
+
+              <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span><strong>Subtotal:</strong></span>
+                  <span id="subtotalManual">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span><strong>IVA (16%):</strong></span>
+                  <span id="ivaManual">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 18px; color: #1b5e20; border-top: 2px solid #4caf50; padding-top: 8px; margin-top: 8px;">
+                  <span><strong>TOTAL:</strong></span>
+                  <span id="totalManual">$0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- DATOS ADICIONALES MANUAL -->
+            <div class="section">
+              <div class="section-title">5. Datos Adicionales</div>
+
+              <div class="form-group">
+                <label for="metodoPagoManual">Método de Pago:</label>
+                <select id="metodoPagoManual">
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Transferencia">Transferencia</option>
+                  <option value="Tarjeta">Tarjeta</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Crédito">Crédito</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="condicionesPagoManual">Condiciones de Pago:</label>
+                <input type="text" id="condicionesPagoManual" placeholder="Ej: Pago al contado, 50% anticipo + 50% contraentrega">
+              </div>
+
+              <div class="form-group">
+                <label for="fechaEntregaManual">Fecha de Entrega:</label>
+                <input type="text" id="fechaEntregaManual" placeholder="Ej: 15 días hábiles">
+              </div>
+
+              <div class="form-group">
+                <label for="lugarEntregaManual">Lugar de Entrega:</label>
+                <input type="text" id="lugarEntregaManual" placeholder="Dirección de entrega">
+              </div>
+
+              <div class="form-group">
+                <label for="observacionesManual">Observaciones:</label>
+                <textarea id="observacionesManual" placeholder="Notas o comentarios adicionales..."></textarea>
+              </div>
+            </div>
+
+          </div> <!-- Fin seccionManual -->
 
           <!-- BOTÓN -->
           <div class="buttons">
@@ -625,13 +766,147 @@
         document.getElementById('totalGeneral').textContent = '$' + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
       }
 
+      // Variables para productos manuales
+      var productosManual = [];
+      var contadorProductosManual = 0;
+
+      // Cambiar entre modo Con Cotización y Manual
+      function cambiarModoCreacion() {
+        var modoSeleccionado = document.querySelector('input[name="modoCreacion"]:checked').value;
+
+        if (modoSeleccionado === 'conCotizacion') {
+          document.getElementById('seccionConCotizacion').style.display = 'block';
+          document.getElementById('seccionManual').style.display = 'none';
+          // Hacer campos de cotización required
+          document.getElementById('selectCotizacion').setAttribute('required', 'required');
+          // Quitar required de campos manuales
+          document.getElementById('nombreClienteManual').removeAttribute('required');
+        } else {
+          document.getElementById('seccionConCotizacion').style.display = 'none';
+          document.getElementById('seccionManual').style.display = 'block';
+          // Hacer campos manuales required
+          document.getElementById('nombreClienteManual').setAttribute('required', 'required');
+          // Quitar required de cotización
+          document.getElementById('selectCotizacion').removeAttribute('required');
+          // Agregar primer producto automáticamente
+          if (productosManual.length === 0) {
+            agregarProductoManual();
+          }
+        }
+      }
+
+      // Agregar producto manual
+      function agregarProductoManual() {
+        var index = contadorProductosManual++;
+        var container = document.getElementById('productosManualContainer');
+
+        var productoDiv = document.createElement('div');
+        productoDiv.id = 'productoManual' + index;
+        productoDiv.style.cssText = 'background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e0e0e0;';
+
+        productoDiv.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong style="color: #1b5e20;">Producto ${index + 1}</strong>
+            <button type="button" onclick="eliminarProductoManual(${index})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">❌ Eliminar</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Código:</label>
+              <input type="text" id="codigo${index}" placeholder="Código del producto" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Cantidad: *</label>
+              <input type="number" id="cantidad${index}" placeholder="1" value="1" min="1" required onchange="calcularImporteProductoManual(${index})" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Descripción: *</label>
+            <textarea id="descripcion${index}" placeholder="Descripción del producto" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; min-height: 60px;"></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div>
+              <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Precio Unitario: *</label>
+              <input type="number" id="precioUnitario${index}" placeholder="0.00" step="0.01" min="0" required onchange="calcularImporteProductoManual(${index})" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">% Desc:</label>
+              <input type="number" id="descuentoPorcentaje${index}" placeholder="0" step="0.01" min="0" max="100" value="0" onchange="calcularImporteProductoManual(${index})" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            <div>
+              <label style="font-size: 13px; font-weight: 500; margin-bottom: 4px; display: block;">Importe:</label>
+              <input type="text" id="importe${index}" placeholder="$0.00" readonly style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; background: #f5f5f5; font-weight: 600;">
+            </div>
+          </div>
+        `;
+
+        container.appendChild(productoDiv);
+      }
+
+      // Eliminar producto manual
+      function eliminarProductoManual(index) {
+        var productoDiv = document.getElementById('productoManual' + index);
+        if (productoDiv) {
+          productoDiv.remove();
+          calcularTotalesManual();
+        }
+      }
+
+      // Calcular importe de un producto manual
+      function calcularImporteProductoManual(index) {
+        var cantidad = parseFloat(document.getElementById('cantidad' + index).value) || 0;
+        var precioUnitario = parseFloat(document.getElementById('precioUnitario' + index).value) || 0;
+        var descuentoPorcentaje = parseFloat(document.getElementById('descuentoPorcentaje' + index).value) || 0;
+
+        var importeBase = cantidad * precioUnitario;
+        var descuento = importeBase * (descuentoPorcentaje / 100);
+        var importe = importeBase - descuento;
+
+        document.getElementById('importe' + index).value = '$' + importe.toFixed(2);
+
+        calcularTotalesManual();
+      }
+
+      // Calcular totales del modo manual
+      function calcularTotalesManual() {
+        var subtotal = 0;
+
+        for (var i = 0; i < contadorProductosManual; i++) {
+          var cantidadInput = document.getElementById('cantidad' + i);
+          if (!cantidadInput) continue; // Producto eliminado
+
+          var cantidad = parseFloat(cantidadInput.value) || 0;
+          var precioUnitario = parseFloat(document.getElementById('precioUnitario' + i).value) || 0;
+          var descuentoPorcentaje = parseFloat(document.getElementById('descuentoPorcentaje' + i).value) || 0;
+
+          var importeBase = cantidad * precioUnitario;
+          var descuento = importeBase * (descuentoPorcentaje / 100);
+          var importe = importeBase - descuento;
+
+          subtotal += importe;
+        }
+
+        var iva = subtotal * 0.16;
+        var total = subtotal + iva;
+
+        document.getElementById('subtotalManual').textContent = '$' + subtotal.toFixed(2);
+        document.getElementById('ivaManual').textContent = '$' + iva.toFixed(2);
+        document.getElementById('totalManual').textContent = '$' + total.toFixed(2);
+      }
+
       function generarNotaVenta(event) {
         event.preventDefault();
 
-        if (!cotizacionSeleccionada) {
-          mostrarAlerta('Selecciona una cotización primero', 'error');
-          return;
-        }
+        var modoCreacion = document.querySelector('input[name="modoCreacion"]:checked').value;
+
+        // MODO CON COTIZACIÓN
+        if (modoCreacion === 'conCotizacion') {
+          if (!cotizacionSeleccionada) {
+            mostrarAlerta('Selecciona una cotización primero', 'error');
+            return;
+          }
 
         var modoProductos = document.querySelector('input[name="modoProductos"]:checked').value;
         var metodoPago = document.getElementById('metodoPago').value;
@@ -734,7 +1009,7 @@
           }
         };
 
-        // Mostrar loading
+        // Mostrar loading y enviar
         document.getElementById('formNotaVenta').style.display = 'none';
         document.getElementById('loadingGenerar').classList.add('active');
 
@@ -760,6 +1035,119 @@
             mostrarAlerta('❌ Error: ' + error.message, 'error');
           })
           .generarPDFNotaVenta(datosNotaVenta);
+
+        } else {
+          // MODO MANUAL (SIN COTIZACIÓN)
+          var nombreCliente = document.getElementById('nombreClienteManual').value;
+          var razonSocial = document.getElementById('razonSocialManual').value;
+          var contacto = document.getElementById('contactoManual').value;
+          var domicilio = document.getElementById('domicilioManual').value;
+          var proyecto = document.getElementById('proyectoManual').value;
+          var vendedor = document.getElementById('vendedorManual').value;
+          var metodoPagoManual = document.getElementById('metodoPagoManual').value;
+          var condicionesPagoManual = document.getElementById('condicionesPagoManual').value;
+          var fechaEntregaManual = document.getElementById('fechaEntregaManual').value;
+          var lugarEntregaManual = document.getElementById('lugarEntregaManual').value;
+          var observacionesManual = document.getElementById('observacionesManual').value;
+
+          // Recopilar productos manuales
+          var productosManualRecopilados = [];
+          var subtotalManual = 0;
+
+          for (var i = 0; i < contadorProductosManual; i++) {
+            var cantidadInput = document.getElementById('cantidad' + i);
+            if (!cantidadInput) continue; // Producto eliminado
+
+            var codigo = document.getElementById('codigo' + i).value || 'SUM E INS';
+            var descripcion = document.getElementById('descripcion' + i).value;
+            var cantidad = parseFloat(cantidadInput.value) || 0;
+            var precioUnitario = parseFloat(document.getElementById('precioUnitario' + i).value) || 0;
+            var descuentoPorcentaje = parseFloat(document.getElementById('descuentoPorcentaje' + i).value) || 0;
+
+            if (!descripcion || cantidad <= 0 || precioUnitario <= 0) {
+              mostrarAlerta('Completa todos los campos requeridos de los productos', 'error');
+              return;
+            }
+
+            var importeBase = cantidad * precioUnitario;
+            var descuento = importeBase * (descuentoPorcentaje / 100);
+            var importe = importeBase - descuento;
+
+            productosManualRecopilados.push({
+              codigo: codigo,
+              descripcion: descripcion,
+              cantidad: cantidad,
+              precioUnitario: precioUnitario,
+              descuentoPorcentaje: descuentoPorcentaje,
+              descuentoPesos: descuento,
+              importe: importe
+            });
+
+            subtotalManual += importe;
+          }
+
+          if (productosManualRecopilados.length === 0) {
+            mostrarAlerta('Agrega al menos un producto', 'error');
+            return;
+          }
+
+          var ivaManualCalc = subtotalManual * 0.16;
+          var totalManualCalc = subtotalManual + ivaManualCalc;
+
+          var datosNotaVentaManual = {
+            modoCreacion: 'manual',
+            modoProductos: 'desglosado',
+            metodoPago: metodoPagoManual,
+            condicionesPago: condicionesPagoManual,
+            fechaEntrega: fechaEntregaManual,
+            lugarEntrega: lugarEntregaManual,
+            observaciones: observacionesManual,
+            datosCliente: {
+              nombre: nombreCliente,
+              razonSocial: razonSocial,
+              contacto: contacto,
+              domicilio: domicilio
+            },
+            datosCotizacion: {
+              proyecto: proyecto,
+              vendedor: vendedor
+            },
+            productos: productosManualRecopilados,
+            modoPrecioCerrado: false,
+            totales: {
+              subtotal: subtotalManual,
+              iva: ivaManualCalc,
+              total: totalManualCalc
+            }
+          };
+
+          // Mostrar loading y enviar
+          document.getElementById('formNotaVenta').style.display = 'none';
+          document.getElementById('loadingGenerar').classList.add('active');
+
+          google.script.run
+            .withSuccessHandler(function(resultado) {
+              document.getElementById('loadingGenerar').classList.remove('active');
+
+              if (resultado.exito) {
+                mostrarAlerta('✅ Nota de Venta generada exitosamente! Folio: ' + resultado.folio, 'success');
+
+                setTimeout(function() {
+                  window.open(resultado.url, '_blank');
+                  location.reload();
+                }, 2000);
+              } else {
+                mostrarAlerta('❌ ' + resultado.mensaje, 'error');
+                document.getElementById('formNotaVenta').style.display = 'block';
+              }
+            })
+            .withFailureHandler(function(error) {
+              document.getElementById('loadingGenerar').classList.remove('active');
+              document.getElementById('formNotaVenta').style.display = 'block';
+              mostrarAlerta('❌ Error: ' + error.message, 'error');
+            })
+            .generarPDFNotaVenta(datosNotaVentaManual);
+        }
       }
 
       function mostrarAlerta(mensaje, tipo) {
