@@ -974,31 +974,23 @@ function generarDocumentoDesdeTemplate(folio, datosCliente, datosCotizacion, pro
     var pdfBlob = docFile.getAs('application/pdf');
     pdfBlob.setName(nombreArchivo + ".pdf");
 
-    // Guardar PDF en carpeta del cliente
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var hojaGenerador = ss.getSheetByName("Generador");
-    var infoCliente = obtenerInformacionCliente(hojaGenerador);
+    // Guardar PDF en carpeta temporal
+    var CARPETA_TEMPORAL_ID = "1mP4iPDmCIGx2WpDmL8Lpi4nnKnmqI7HY";
 
-    if (infoCliente.exito && infoCliente.carpetaId) {
-      try {
-        var carpeta = DriveApp.getFolderById(infoCliente.carpetaId);
-        var pdfFile = carpeta.createFile(pdfBlob);
+    try {
+      var carpetaTemporal = DriveApp.getFolderById(CARPETA_TEMPORAL_ID);
+      var pdfFile = carpetaTemporal.createFile(pdfBlob);
 
-        // Eliminar el Doc original de Mi Unidad
-        DriveApp.getFileById(doc.getId()).setTrashed(true);
+      // Eliminar el Doc original de Mi Unidad
+      DriveApp.getFileById(doc.getId()).setTrashed(true);
 
-        Logger.log("✅ PDF guardado en carpeta del cliente");
-        return pdfFile.getUrl();
+      Logger.log("✅ PDF guardado en carpeta temporal");
+      return pdfFile.getUrl();
 
-      } catch (errorCarpeta) {
-        Logger.log("⚠️ No se pudo guardar en carpeta del cliente, guardando en Mi Unidad");
-        // Guardar en Mi Unidad si falla
-        var pdfFile = DriveApp.createFile(pdfBlob);
-        DriveApp.getFileById(doc.getId()).setTrashed(true);
-        return pdfFile.getUrl();
-      }
-    } else {
-      // Guardar en Mi Unidad
+    } catch (errorCarpeta) {
+      Logger.log("⚠️ No se pudo guardar en carpeta temporal: " + errorCarpeta.message);
+      Logger.log("⚠️ Guardando en Mi Unidad como respaldo");
+      // Guardar en Mi Unidad si falla
       var pdfFile = DriveApp.createFile(pdfBlob);
       DriveApp.getFileById(doc.getId()).setTrashed(true);
       return pdfFile.getUrl();
